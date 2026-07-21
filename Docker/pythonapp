@@ -1,0 +1,5 @@
+# Docker File
+FROM python:3.11
+WORKDIR /opt/project/python-app
+COPY app.py /opt/project/python-app/
+CMD ["python", "/opt/project/python-app/app.py"]
