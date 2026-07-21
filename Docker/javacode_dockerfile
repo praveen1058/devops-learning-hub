@@ -1,0 +1,6 @@
+# Docker File
+FROM openjdk:17
+WORKDIR /opt/pathnex/java-app
+COPY Hello.java /opt/project/java-app/
+RUN javac /opt/project/java-app/Hello.java
+CMD ["java", "-cp", "/opt/project/java-app", "Hello"]
