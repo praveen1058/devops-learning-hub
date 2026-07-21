@@ -1,0 +1,20 @@
+# Kubernetes — Create a ReplicaSet with 3 Replicas
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: web-replicaset
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+        - name: app
+          image: nginx
+          ports:
+            - containerPort: 80
