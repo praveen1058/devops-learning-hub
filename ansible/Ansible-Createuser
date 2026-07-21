@@ -1,0 +1,16 @@
+#Ansible — Create User and Set Permissions
+- name: Create a new user
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create user
+      user:
+        name: devopsadmin
+        state: present
+        shell: /bin/bash
+    - name: Set permissions for the user
+      file:
+        path: /home/devopsadmin
+        owner: devopsadmin
+        group: devopsadmin
+        mode: '0755'
