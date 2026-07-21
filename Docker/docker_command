@@ -1,0 +1,4 @@
+# Docker Images & Containers
+docker pull ubuntu
+docker images
+docker ps -a
