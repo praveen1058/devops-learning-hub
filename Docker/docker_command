@@ -2,3 +2,6 @@
 docker pull ubuntu
 docker images
 docker ps -a
+
+docker build -t containername .
+docker run -d -p 80:80 web-nginx
