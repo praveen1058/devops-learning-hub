@@ -1,0 +1,1013 @@
+# Continuous Development, CI & CD
+
+## Jenkins — Build Orchestration Tool
+
+Jenkins is used to automate and orchestrate CI/CD activities.
+
+For a Java application, Jenkins can automate:
+
+```text
+Clone Source Code
+       |
+       v
+Compile
+       |
+       v
+Unit Testing
+       |
+       v
+Code Coverage
+       |
+       v
+Build Artifact
+       |
+       v
+Archive / Publish Artifact
+       |
+       v
+Deploy
+```
+
+---
+
+# Application Build
+
+A **Build** is the process of compiling source code and creating a deployable artifact.
+
+Example:
+
+```text
+Java Source Code
+       |
+       v
+Java Compiler
+       |
+       v
+Compiled Code
+       |
+       v
+WAR / JAR
+```
+
+Java compiler:
+
+```bash
+javac
+```
+
+Common build tools:
+
+```text
+Ant
+Maven
+Gradle
+```
+
+---
+
+# Maven Build Tool
+
+Maven is a Java build and project-management tool used to:
+
+* Compile Java source code
+* Execute unit tests
+* Manage dependencies
+* Execute plugins
+* Package applications
+* Create artifacts
+* Perform build-related activities
+
+Common Maven command:
+
+```bash
+mvn clean package
+```
+
+---
+
+# Maven Project Structure
+
+Typical Java Maven project:
+
+```text
+Java_Web_Application_Project/
+|
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   ├── Application.java
+│   │   │   ├── Controller.java
+│   │   │   └── Service.java
+│   │   │
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       ├── *.html
+│   │       ├── *.css
+│   │       └── *.js
+│   │
+│   └── test/
+│       └── *.java
+│
+├── target/
+│   └── application.war / application.jar
+│
+└── pom.xml
+```
+
+### Important directories
+
+**src/main**
+
+Contains application source code and resources.
+
+**src/test**
+
+Contains unit tests and test-related code.
+
+**target**
+
+Contains Maven build output and generated artifacts.
+
+**pom.xml**
+
+Main Maven project configuration file.
+
+---
+
+# pom.xml — Project Object Model
+
+`pom.xml` stands for:
+
+```text
+Project Object Model
+```
+
+It is normally located in the root directory of a Maven project.
+
+It defines:
+
+* Project information
+* Group ID
+* Artifact ID
+* Version
+* Packaging
+* Dependencies
+* Plugins
+* Build configuration
+* Properties
+
+Example:
+
+```xml
+<project>
+
+    <groupId>com.example</groupId>
+    <artifactId>java-webapp</artifactId>
+    <version>1.0</version>
+    <packaging>war</packaging>
+
+    <dependencies>
+        ...
+    </dependencies>
+
+    <build>
+        <plugins>
+            ...
+        </plugins>
+    </build>
+
+</project>
+```
+
+---
+
+# Maven Dependencies
+
+Dependencies are external libraries required by the application.
+
+Examples:
+
+```text
+JUnit
+Selenium
+Spring
+Other Java Libraries
+```
+
+Dependencies are declared in `pom.xml`.
+
+Example — JUnit:
+
+```xml
+<dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>4.13.2</version>
+    <scope>test</scope>
+</dependency>
+```
+
+Important dependency fields:
+
+```text
+groupId
+artifactId
+version
+scope
+```
+
+Maven repositories contain dependencies, plugins, and other artifacts.
+
+Example public repository:
+
+https://mvnrepository.com/
+
+---
+
+# Selenium Dependency
+
+Selenium can be used for browser-based testing.
+
+```xml
+<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-java</artifactId>
+    <version>4.35.0</version>
+</dependency>
+```
+
+---
+
+# Maven Plugins
+
+Maven plugins provide additional functionality during the build.
+
+Plugins can perform tasks such as:
+
+```text
+Compile
+Test
+Package
+Code Coverage
+Static Analysis
+Deployment
+```
+
+Example:
+
+```text
+JaCoCo Maven Plugin
+```
+
+---
+
+# Maven Repository
+
+A Maven repository contains:
+
+```text
+Dependencies
+Libraries
+Plugins
+Artifacts
+```
+
+During a build:
+
+```text
+pom.xml
+   |
+   v
+Maven
+   |
+   v
+Resolve Dependencies
+   |
+   v
+Download Required Libraries
+   |
+   v
+Compile / Test / Package
+```
+
+Maven stores downloaded dependencies in its local repository.
+
+---
+
+# Development Environment
+
+Developers generally perform:
+
+```text
+1. Create Source Code
+2. Compile Code
+3. Run Unit Tests
+4. Fix Issues
+5. Commit Changes
+6. Push Code to Git Repository
+```
+
+Common tools:
+
+```text
+IDE
+JDK
+Git
+Maven
+JUnit
+Application Framework
+```
+
+Examples of IDEs:
+
+```text
+Eclipse
+IntelliJ IDEA
+Visual Studio Code
+PyCharm
+```
+
+Source-code repositories can include:
+
+```text
+GitHub
+GitLab
+Bitbucket
+Azure Repos
+```
+
+---
+
+# Build Environment
+
+The Build environment automates application building.
+
+Typical process:
+
+```text
+Git Repository
+      |
+      v
+Checkout Source Code
+      |
+      v
+Read pom.xml
+      |
+      v
+Resolve Dependencies
+      |
+      v
+Compile
+      |
+      v
+Unit Test
+      |
+      v
+Code Coverage
+      |
+      v
+Package
+      |
+      v
+Create Artifact
+      |
+      v
+Archive / Publish Artifact
+```
+
+---
+
+# Test Environment
+
+After a successful build, the application can be promoted to testing environments.
+
+Examples:
+
+```text
+QA
+UAT
+```
+
+Testing may include:
+
+```text
+Functional Testing
+Integration Testing
+Regression Testing
+User Acceptance Testing
+```
+
+---
+
+# Production Environment
+
+After successful testing and approval, the application can be promoted to Production.
+
+```text
+Development
+     |
+     v
+Build
+     |
+     v
+QA
+     |
+     v
+UAT
+     |
+     v
+Production
+```
+
+---
+
+# Source Code vs Artifacts
+
+## Source Code
+
+Source code is maintained in a source-code repository.
+
+Example:
+
+```text
+Application.java v1.1
+Application.java v1.2
+Application.java v1.3
+Application.java v1.4
+```
+
+Repository:
+
+```text
+GitHub
+```
+
+## Artifacts
+
+Build artifacts are generated from source code.
+
+Examples:
+
+```text
+application-1.1.war
+application-1.2.war
+application-1.3.war
+application-1.4.war
+```
+
+Artifacts can be stored in:
+
+```text
+JFrog Artifactory
+Azure Artifacts
+Nexus Repository
+```
+
+Flow:
+
+```text
+Source Code
+     |
+     v
+Git Repository
+     |
+     v
+Maven Build
+     |
+     v
+WAR / JAR
+     |
+     v
+Artifact Repository
+     |
+     v
+Deployment
+```
+
+---
+
+# Application Build Process
+
+### Input
+
+```text
+Source Code
+```
+
+Examples:
+
+```text
+*.java
+pom.xml
+Resources
+Test Cases
+```
+
+### Output
+
+```text
+Build Artifact
+```
+
+Examples:
+
+```text
+*.war
+*.jar
+```
+
+Overall:
+
+```text
+Source Code
+     |
+     | Maven
+     v
+Artifact
+```
+
+---
+
+# Maven Goals and Commands
+
+## Compile
+
+```bash
+mvn compile
+```
+
+Compiles the application source code.
+
+## Test
+
+```bash
+mvn test
+```
+
+Runs the configured unit tests.
+
+## Package
+
+```bash
+mvn package
+```
+
+Packages the application into its configured artifact format.
+
+## Clean
+
+```bash
+mvn clean
+```
+
+Removes previous build output, normally the `target` directory.
+
+## Clean and Package
+
+```bash
+mvn clean package
+```
+
+Cleans the previous build output and performs the package lifecycle.
+
+## Install
+
+```bash
+mvn clean install
+```
+
+Builds the application and installs the resulting artifact into the local Maven repository.
+
+---
+
+# Maven Lifecycle
+
+Simplified Maven lifecycle:
+
+```text
+validate
+   |
+   v
+compile
+   |
+   v
+test
+   |
+   v
+package
+   |
+   v
+verify
+   |
+   v
+install
+   |
+   v
+deploy
+```
+
+The actual behavior depends on the project's POM and configured plugins.
+
+---
+
+# WAR and JAR
+
+For a Java web application:
+
+```text
+WAR
+```
+
+is commonly used for deployment to an application server.
+
+For many standalone Java applications:
+
+```text
+JAR
+```
+
+is commonly used.
+
+Examples:
+
+```text
+target/
+├── application.war
+```
+
+or:
+
+```text
+target/
+├── application.jar
+```
+
+---
+
+# Unit Testing
+
+Unit testing is the process of testing individual units/components of application code.
+
+JUnit is a commonly used Java unit-testing framework.
+
+Flow:
+
+```text
+Application Code
+       |
+       v
+JUnit Test Cases
+       |
+       v
+Pass / Fail
+```
+
+Maven command:
+
+```bash
+mvn test
+```
+
+---
+
+# JaCoCo — Java Code Coverage
+
+JaCoCo is a Java code-coverage tool.
+
+It measures how much application code is exercised by automated tests.
+
+Flow:
+
+```text
+Application Code
+       |
+       v
+JUnit Tests
+       |
+       v
+JaCoCo
+       |
+       v
+Coverage Report
+```
+
+JaCoCo is normally configured as a **Maven plugin**.
+
+Example:
+
+```xml
+<plugin>
+    <groupId>org.jacoco</groupId>
+    <artifactId>jacoco-maven-plugin</artifactId>
+    <version>0.8.13</version>
+
+    <executions>
+
+        <execution>
+            <goals>
+                <goal>prepare-agent</goal>
+            </goals>
+        </execution>
+
+        <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+                <goal>report</goal>
+            </goals>
+        </execution>
+
+    </executions>
+</plugin>
+```
+
+Code coverage can include measurements such as:
+
+```text
+Line Coverage
+Branch Coverage
+Method Coverage
+Class Coverage
+```
+
+Important:
+
+```text
+100% code coverage
+```
+
+does not necessarily mean that the application is defect-free. It indicates that the measured code was exercised by the tests.
+
+---
+
+# CI Build Process
+
+A typical Jenkins + Maven CI process:
+
+```text
+GitHub Repository
+       |
+       v
+Jenkins
+       |
+       v
+Checkout Source Code
+       |
+       v
+Maven
+       |
+       +---- Compile
+       |
+       +---- Unit Test
+       |
+       +---- JaCoCo
+       |
+       +---- Package
+       |
+       v
+WAR / JAR
+       |
+       v
+Artifact Repository
+       |
+       v
+QA
+       |
+       v
+UAT
+       |
+       v
+Production
+```
+
+---
+
+# DevOps Build Workflow
+
+```text
+Developer
+    |
+    | Push Code
+    v
+GitHub
+    |
+    | Checkout
+    v
+Jenkins
+    |
+    v
+Maven
+    |
+    +---- Compile
+    |
+    +---- Unit Test
+    |
+    +---- Code Coverage
+    |
+    +---- Package
+    |
+    v
+WAR / JAR
+    |
+    v
+Artifact Repository
+    |
+    v
+QA / UAT
+    |
+    v
+Production
+```
+
+---
+
+# Maven Core Concepts
+
+```text
+Maven
+ |
+ +-- pom.xml
+ |
+ +-- Dependencies
+ |
+ +-- Plugins
+ |
+ +-- Repositories
+ |
+ +-- Lifecycle
+ |
+ +-- Phases
+ |
+ +-- Goals
+ |
+ +-- Build Output
+```
+
+### `pom.xml`
+
+Main Maven project configuration file.
+
+### Dependency
+
+External library required by the application.
+
+### Plugin
+
+Provides additional Maven functionality.
+
+### Repository
+
+Stores dependencies, plugins, and artifacts.
+
+### Lifecycle
+
+Defines the sequence of Maven build phases.
+
+### Goal
+
+An action that Maven can execute.
+
+### Artifact
+
+Build output such as JAR or WAR.
+
+---
+
+# Useful Maven Commands
+
+```bash
+# Check Maven version
+mvn --version
+
+# Compile
+mvn compile
+
+# Run unit tests
+mvn test
+
+# Package application
+mvn package
+
+# Clean build output
+mvn clean
+
+# Clean and package
+mvn clean package
+
+# Clean and install
+mvn clean install
+
+# Display effective POM
+mvn help:effective-pom
+```
+
+---
+
+# Java Maven Web Application
+
+A Java web application can be created using frameworks such as Spring Boot.
+
+Example project:
+
+```text
+java-webapp-project/
+|
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   └── resources/
+│   │
+│   └── test/
+│
+├── target/
+│
+└── pom.xml
+```
+
+Training repository:
+
+https://github.com/PL-DevOps-Cloud-2705/java-webapp-project
+
+---
+
+# Quick Revision
+
+```text
+Build
+  |
+  +--> Compile Source Code
+  +--> Run Tests
+  +--> Create Artifact
+
+Maven
+  |
+  +--> Java Build Tool
+  +--> Dependency Management
+  +--> Plugin Management
+  +--> Build Automation
+
+pom.xml
+  |
+  +--> Project Configuration
+  +--> Dependencies
+  +--> Plugins
+  +--> Build Configuration
+
+Jenkins
+  |
+  +--> CI/CD Orchestration
+
+JUnit
+  |
+  +--> Unit Testing
+
+JaCoCo
+  |
+  +--> Code Coverage
+
+GitHub
+  |
+  +--> Source Code Repository
+
+Artifact Repository
+  |
+  +--> Stores Build Artifacts
+```
+
+## Most Important Command
+
+```bash
+mvn clean package
+```
+
+## Most Important Maven File
+
+```text
+pom.xml
+```
+
+## Typical CI Flow
+
+```text
+GitHub
+   ↓
+Jenkins
+   ↓
+Maven
+   ↓
+Compile
+   ↓
+Unit Test
+   ↓
+JaCoCo
+   ↓
+Package
+   ↓
+WAR / JAR
+   ↓
+Artifact Repository
+   ↓
+QA / UAT
+   ↓
+Production
+```
