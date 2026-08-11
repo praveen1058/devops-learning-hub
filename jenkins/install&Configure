@@ -1,0 +1,308 @@
+# Install & Configure Jenkins Server
+
+## 1. Install and Configure Jenkins Server
+
+Refer to the official Jenkins documentation:
+
+[Jenkins Installation Guide](https://www.jenkins.io/doc/book/installing/linux/?utm_source=chatgpt.com)
+
+### Launch AWS EC2 Instance
+
+* AMI: Ubuntu 24.04
+* Instance Type: `t2.micro`
+* Configure the Security Group to allow SSH and Jenkins traffic.
+* Allow TCP port `8080` for Jenkins.
+
+### Install Prerequisites
+
+```bash
+sudo -i
+
+apt update -y
+
+apt install git -y
+git --version
+
+apt install openjdk-21-jre -y
+java -version
+```
+
+### Install Jenkins
+
+```bash
+wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] \
+https://pkg.jenkins.io/debian-stable binary/" | \
+tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+apt update
+
+apt install jenkins -y
+```
+
+### Post-Installation Activities
+
+```bash
+jenkins --version
+
+systemctl status jenkins
+
+systemctl start jenkins
+systemctl stop jenkins
+systemctl restart jenkins
+systemctl enable jenkins
+```
+
+Default Jenkins Home Directory:
+
+```text
+/var/lib/jenkins
+```
+
+Open Jenkins in a web browser:
+
+```text
+http://<Public_IP_Address>:8080/
+```
+
+Retrieve the initial administrator password:
+
+```bash
+cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+
+---
+
+# 2. Configure Jenkins Slave/Agent Node for Java Maven Applications
+
+Launch an Ubuntu 24.04 EC2 instance.
+
+### Install Java
+
+```bash
+sudo -i
+
+apt update -y
+
+apt install openjdk-17-jre -y
+
+java -version
+```
+
+### Install Git
+
+```bash
+apt install git -y
+
+git --version
+```
+
+### Install Maven
+
+Refer to the official Maven documentation:
+
+[Apache Maven Installation Guide](https://maven.apache.org/install.html?utm_source=chatgpt.com)
+
+```bash
+apt install maven -y
+
+mvn --version
+```
+
+---
+
+## 3. Create Jenkins Agent User and SSH Keys
+
+Create the user:
+
+```bash
+useradd devopsadmin -s /bin/bash -m -d /home/devopsadmin
+
+su - devopsadmin
+```
+
+Generate SSH keys:
+
+```bash
+ssh-keygen -t ecdsa -b 521
+```
+
+Check the generated keys:
+
+```bash
+ls ~/.ssh
+```
+
+The directory should contain:
+
+```text
+id_ecdsa
+id_ecdsa.pub
+```
+
+* `id_ecdsa` → Private Key
+* `id_ecdsa.pub` → Public Key
+
+Configure the public key for SSH authentication:
+
+```bash
+cat ~/.ssh/id_ecdsa.pub > ~/.ssh/authorized_keys
+
+chmod 600 ~/.ssh/*
+```
+
+---
+
+# 4. Attach Jenkins Agent Node to Jenkins Controller
+
+Login to Jenkins:
+
+```text
+Manage Jenkins
+    ↓
+Nodes
+    ↓
+New Node
+    ↓
+Enter Node Name
+    ↓
+Select Permanent Agent
+```
+
+Configure the SSH connection parameters:
+
+* Node Name
+* Host Name
+* User Name
+* Credentials
+* SSH connection details
+
+The Jenkins Controller will use SSH to connect to the Jenkins Agent and execute application builds.
+
+---
+
+# 5. Install Apache Tomcat Application Server
+
+Launch a new Ubuntu 24.04 EC2 instance.
+
+Allow TCP port `8080` in the Security Group.
+
+Refer to the official Tomcat documentation:
+
+[Apache Tomcat](https://tomcat.apache.org/?utm_source=chatgpt.com)
+
+### Install Java
+
+```bash
+sudo -i
+
+apt update -y
+
+apt-get install default-jdk -y
+
+java --version
+```
+
+### Download and Install Tomcat
+
+```bash
+cd /opt
+
+wget https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.99/bin/apache-tomcat-8.5.99.tar.gz
+
+tar -xvzf apache-tomcat-8.5.99.tar.gz
+
+mv apache-tomcat-8.5.99 tomcat
+```
+
+Start Tomcat:
+
+```bash
+cd /opt/tomcat/bin
+
+./startup.sh
+```
+
+Access Tomcat:
+
+```text
+http://<Public_IP_Address>:8080/
+```
+
+---
+
+# 6. Configure SSH Access to Tomcat Server
+
+Create the deployment user:
+
+```bash
+useradd devopsadmin -s /bin/bash -m -d /home/devopsadmin
+
+su - devopsadmin
+```
+
+Generate SSH keys:
+
+```bash
+ssh-keygen -t ecdsa -b 521
+```
+
+Configure the public key:
+
+```bash
+cat ~/.ssh/id_ecdsa.pub > ~/.ssh/authorized_keys
+
+chmod 600 ~/.ssh/*
+```
+
+Give the deployment user ownership of the Tomcat directory:
+
+```bash
+chown -R devopsadmin /opt/tomcat
+```
+
+---
+
+# 7. Configure Jenkins for Artifact Deployment
+
+The **Publish Over SSH** plugin can be used to copy application artifacts from the Jenkins Agent to the Tomcat Server.
+
+Install the plugin from:
+
+```text
+Jenkins
+    ↓
+Manage Jenkins
+    ↓
+Plugins
+    ↓
+Available Plugins
+    ↓
+Publish Over SSH
+```
+
+Configure the Tomcat Server connection in Jenkins and use it in the CI/CD pipeline to deploy the generated `.war` artifact.
+
+## Deployment Flow
+
+```text
+Developer
+    ↓
+Git Repository
+    ↓
+Jenkins Controller
+    ↓
+Jenkins Agent
+    ↓
+Maven Build
+    ↓
+*.war
+    ↓
+Publish Over SSH
+    ↓
+Tomcat Server
+    ↓
+/opt/tomcat/webapps/
+```
