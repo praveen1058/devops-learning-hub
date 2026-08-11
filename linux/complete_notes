@@ -1,0 +1,2217 @@
+# Linux & Shell Scripting — DevOps Fundamentals
+
+> **Training Notes: Day 3 to Day 8**
+> Focus: Linux Administration, AWS EC2, User & Access Management, Remote Server Management, and Bash Shell Scripting.
+
+---
+
+## 📚 Course Contents
+
+* [Day 3 — Linux Fundamentals & AWS EC2](#day-3--linux-fundamentals--aws-ec2)
+* [Day 4 — Linux Fundamentals & Package Management](#day-4--linux-fundamentals--package-management)
+* [Day 5 — Linux File Management & Permissions](#day-5--linux-file-management--permissions)
+* [Day 6 — User Management & Remote Server Management](#day-6--user-management--remote-server-management)
+* [Day 7 — Shell Scripting Fundamentals](#day-7--shell-scripting-fundamentals)
+* [Day 8 — Shell Scripting & DevOps Automation](#day-8--shell-scripting--devops-automation)
+* [DevOps Use Cases](#devops-use-cases)
+* [Important Linux Commands](#important-linux-commands)
+* [Important Bash Concepts](#important-bash-concepts)
+
+---
+
+# Day 3 — Linux Fundamentals & AWS EC2
+
+**Date:** 4 June 2026
+
+## Module 2: Fundamentals of Linux Operating System
+
+### Topics
+
+* Overview of Linux
+* Linux Architecture
+* Linux Distributions
+* Basic Linux Commands
+* File Permission Management
+* User Creation
+* Shell Scripts
+* SSH
+* VI/Vim Utility
+* Package Management
+* File Management
+* User Management
+* Access Management
+* Remote Server Management
+* Process Automation
+
+---
+
+## Linux from a DevOps Perspective
+
+As a DevOps team, Linux machines are commonly managed for:
+
+* Package Management
+* File Management
+* User Management
+* Access Management
+* Remote Server Management
+* Process Automation
+* Application Deployment
+* Monitoring
+* Security Updates
+* Backup and Restore
+
+---
+
+# Lab Environment
+
+## AWS Cloud Platform
+
+AWS EC2 can be used to create Linux-based Virtual Machines.
+
+### Lab Flow
+
+```text
+AWS Account
+     |
+     v
+AWS Management Console
+     |
+     v
+EC2
+     |
+     v
+Ubuntu Linux VM
+     |
+     v
+SSH Connection
+     |
+     v
+Linux Administration
+```
+
+---
+
+## AWS Account Prerequisites
+
+To create an AWS account, you generally need:
+
+* Active Email ID
+* Active Mobile Number
+* Valid Payment Card
+* PAN details where required
+* Strong password
+* MFA / Multi-Factor Authentication
+
+AWS Console:
+
+https://aws.amazon.com/console/
+
+AWS Account Creation:
+
+https://aws.amazon.com/resources/create-account/
+
+> **Security Best Practice:** Enable MFA on the AWS root account and avoid using the root account for everyday administration.
+
+---
+
+# Creating an Ubuntu EC2 Instance
+
+Example distribution:
+
+```text
+Ubuntu 24.04 LTS
+```
+
+### Basic EC2 Concepts
+
+* Instance
+* AMI
+* Instance Type
+* Key Pair
+* Security Group
+* Public IP
+* Private IP
+* Storage
+* Network Interface
+
+---
+
+# Day 4 — Linux Fundamentals & Package Management
+
+**Date:** 5 June 2026
+
+---
+
+# What is Linux?
+
+An Operating System acts as an interface between applications/users and the underlying hardware.
+
+Examples:
+
+* Windows
+* macOS
+* Linux
+
+Linux is an open-source operating system family based on Unix-like principles.
+
+The **Linux kernel** is the core component responsible for managing hardware and system resources.
+
+---
+
+# Linux Architecture
+
+A simplified view:
+
+```text
++-----------------------------+
+|       User Applications     |
++-----------------------------+
+|          Shell              |
++-----------------------------+
+|       System Libraries      |
++-----------------------------+
+|       Linux Kernel          |
++-----------------------------+
+|          Hardware           |
++-----------------------------+
+```
+
+The kernel is responsible for areas such as:
+
+* Process Management
+* Memory Management
+* Storage
+* Networking
+* Inter-Process Communication (IPC)
+* Security
+* Namespaces
+* Control Groups (cgroups)
+
+---
+
+# Linux Distributions
+
+Different Linux distributions use different package-management ecosystems.
+
+| Distribution  | Package Manager |
+| ------------- | --------------- |
+| Ubuntu        | `apt`           |
+| Debian        | `apt`           |
+| RHEL          | `dnf`           |
+| CentOS Stream | `dnf`           |
+| Fedora        | `dnf`           |
+
+> Package-management commands and package names can differ between distributions.
+
+---
+
+# SSH — Secure Shell
+
+SSH is commonly used to securely connect to remote Linux servers.
+
+Default SSH port:
+
+```text
+22
+```
+
+### SSH Connection Requirements
+
+```text
+Hostname / IP Address
+Username
+Authentication
+Network Access
+```
+
+Authentication can include:
+
+* Password-based authentication
+* Key-based authentication
+* Other authentication mechanisms depending on configuration
+
+---
+
+# AWS EC2 SSH Example
+
+Example:
+
+```bash
+chmod 400 AWS_MLOps_KeyPair.pem
+```
+
+Connect to an Ubuntu EC2 instance:
+
+```bash
+ssh -i "AWS_MLOps_KeyPair.pem" ubuntu@<PUBLIC-IP>
+```
+
+Example:
+
+```bash
+ssh -i "AWS_MLOps_KeyPair.pem" ubuntu@ec2-13-126-190-242.ap-south-1.compute.amazonaws.com
+```
+
+### Important
+
+The `.pem` file is a **private key**.
+
+Do not:
+
+* Commit it to GitHub
+* Share it publicly
+* Upload it to repositories
+* Send it to other users
+
+A good `.gitignore` entry is:
+
+```gitignore
+*.pem
+*.key
+```
+
+---
+
+# Package Management
+
+Package managers are used to:
+
+* Install software
+* Remove software
+* Upgrade software
+* Update package metadata
+* Resolve dependencies
+
+For Ubuntu/Debian:
+
+```bash
+sudo apt update
+```
+
+Install a package:
+
+```bash
+sudo apt install <package-name> -y
+```
+
+Remove a package:
+
+```bash
+sudo apt remove <package-name> -y
+```
+
+Upgrade a package:
+
+```bash
+sudo apt upgrade <package-name>
+```
+
+---
+
+# Root Access
+
+Instead of continuously switching to root, prefer using `sudo` for individual administrative commands.
+
+Example:
+
+```bash
+sudo apt update
+```
+
+An interactive root shell can be opened with:
+
+```bash
+sudo -i
+```
+
+Return to the previous user:
+
+```bash
+exit
+```
+
+---
+
+# Installing Java
+
+Example for Ubuntu:
+
+```bash
+sudo apt update
+sudo apt install openjdk-17-jdk -y
+```
+
+Verify:
+
+```bash
+java --version
+```
+
+---
+
+# Installing Git
+
+```bash
+sudo apt update
+sudo apt install git -y
+```
+
+Verify:
+
+```bash
+git --version
+```
+
+---
+
+# Installing Nginx
+
+```bash
+sudo apt update
+sudo apt install nginx -y
+```
+
+Check version:
+
+```bash
+nginx -v
+```
+
+Check service status:
+
+```bash
+systemctl status nginx
+```
+
+Start:
+
+```bash
+sudo systemctl start nginx
+```
+
+Stop:
+
+```bash
+sudo systemctl stop nginx
+```
+
+Restart:
+
+```bash
+sudo systemctl restart nginx
+```
+
+Enable at boot:
+
+```bash
+sudo systemctl enable nginx
+```
+
+Disable at boot:
+
+```bash
+sudo systemctl disable nginx
+```
+
+---
+
+# Common `systemctl` Operations
+
+| Command                        | Purpose          |
+| ------------------------------ | ---------------- |
+| `systemctl status nginx`       | Check status     |
+| `sudo systemctl start nginx`   | Start service    |
+| `sudo systemctl stop nginx`    | Stop service     |
+| `sudo systemctl restart nginx` | Restart service  |
+| `sudo systemctl enable nginx`  | Start at boot    |
+| `sudo systemctl disable nginx` | Remove from boot |
+
+---
+
+# Finding Installed Software
+
+Use `which`:
+
+```bash
+which nginx
+```
+
+```bash
+which git
+```
+
+Other useful commands:
+
+```bash
+command -v nginx
+```
+
+```bash
+whereis nginx
+```
+
+---
+
+# Service Ports
+
+Some common examples:
+
+| Service | Typical Port |
+| ------- | -----------: |
+| SSH     |           22 |
+| HTTP    |           80 |
+| HTTPS   |          443 |
+| Tomcat  |         8080 |
+
+AWS Security Groups must allow the required inbound traffic.
+
+> Only open ports that are actually required.
+
+---
+
+# Day 5 — Linux File Management & Permissions
+
+**Date:** 8 June 2026
+
+---
+
+# Directory Navigation
+
+### Present Working Directory
+
+```bash
+pwd
+```
+
+### Change Directory
+
+```bash
+cd <directory>
+```
+
+Example:
+
+```bash
+cd /opt
+```
+
+### Go to Root Directory
+
+```bash
+cd /
+```
+
+### Go to Current User's Home Directory
+
+```bash
+cd ~
+```
+
+For example:
+
+```text
+ubuntu -> /home/ubuntu
+root   -> /root
+```
+
+### Go to Parent Directory
+
+```bash
+cd ..
+```
+
+---
+
+# Listing Files
+
+```bash
+ls
+```
+
+Detailed listing:
+
+```bash
+ls -l
+```
+
+Include hidden files:
+
+```bash
+ls -la
+```
+
+Long listing including hidden files:
+
+```bash
+ls -la
+```
+
+> `ll` is commonly available as a shell alias, but it is not a universal Linux command.
+
+---
+
+# Creating Files
+
+Create an empty file:
+
+```bash
+touch file1.txt
+```
+
+Create/update a file:
+
+```bash
+echo "Record1" > file1.txt
+```
+
+Append to a file:
+
+```bash
+echo "Record2" >> file1.txt
+```
+
+Read a file:
+
+```bash
+cat file1.txt
+```
+
+---
+
+# File Editors — Vim
+
+Open/create a file:
+
+```bash
+vi sample.txt
+```
+
+Enter insert mode:
+
+```text
+i
+```
+
+Save and exit:
+
+```text
+Esc
+:wq
+```
+
+Exit without saving:
+
+```text
+Esc
+:q!
+```
+
+---
+
+# Copy Files
+
+```bash
+cp source.txt destination.txt
+```
+
+Copy a directory:
+
+```bash
+cp -r source_directory destination_directory
+```
+
+---
+
+# Rename / Move
+
+```bash
+mv old.txt new.txt
+```
+
+Move a directory:
+
+```bash
+mv sdir2 outputdir1
+```
+
+---
+
+# Delete Files
+
+```bash
+rm file.txt
+```
+
+Multiple files:
+
+```bash
+rm file1.txt file2.txt
+```
+
+Using a wildcard:
+
+```bash
+rm *.txt
+```
+
+Force removal:
+
+```bash
+rm -f file.txt
+```
+
+Remove a directory recursively:
+
+```bash
+rm -rf directory_name
+```
+
+> **WARNING:** `rm -rf` can permanently delete data. Always verify the path before executing it.
+
+---
+
+# Create Directories
+
+```bash
+mkdir mydir
+```
+
+Create nested directories:
+
+```bash
+mkdir -p project/src/main
+```
+
+---
+
+# Linux File Permissions
+
+Example:
+
+```text
+-rw-rw-r-- 1 ubuntu ubuntu 16 Jun 8 15:07 file1.txt
+```
+
+Permission structure:
+
+```text
+- rw- rw- r--
+  |   |   |
+  |   |   +---- Others
+  |   +-------- Group
+  +------------ Owner
+```
+
+---
+
+# File Type
+
+The first character identifies the object type.
+
+```text
+-
+```
+
+Regular file.
+
+```text
+d
+```
+
+Directory.
+
+Example:
+
+```text
+drwxr-xr-x
+```
+
+The object is a directory.
+
+---
+
+# Permission Types
+
+| Permission | Meaning |
+| ---------- | ------- |
+| `r`        | Read    |
+| `w`        | Write   |
+| `x`        | Execute |
+
+Permissions are applied to:
+
+```text
+Owner
+Group
+Others
+```
+
+Example:
+
+```text
+-rwxrwxr--
+```
+
+Means:
+
+```text
+Owner  -> rwx
+Group  -> rwx
+Others -> r--
+```
+
+---
+
+# Numeric Permissions
+
+Linux permissions can also be represented numerically.
+
+| Permission    | Value |
+| ------------- | ----: |
+| Read (`r`)    |     4 |
+| Write (`w`)   |     2 |
+| Execute (`x`) |     1 |
+
+Therefore:
+
+```text
+rwx = 7
+rw- = 6
+r-x = 5
+r-- = 4
+```
+
+Example:
+
+```bash
+chmod 755 script.sh
+```
+
+Means:
+
+```text
+Owner  -> rwx
+Group  -> r-x
+Others -> r-x
+```
+
+Another common example:
+
+```bash
+chmod 644 file.txt
+```
+
+Means:
+
+```text
+Owner  -> rw-
+Group  -> r--
+Others -> r--
+```
+
+Private SSH files commonly require restrictive permissions, for example:
+
+```bash
+chmod 600 ~/.ssh/authorized_keys
+```
+
+---
+
+# Changing Ownership
+
+Change owner:
+
+```bash
+sudo chown devopsadmin file.txt
+```
+
+Change owner and group:
+
+```bash
+sudo chown devopsadmin:devopsadmin file.txt
+```
+
+Recursively:
+
+```bash
+sudo chown -R devopsadmin:devopsadmin /opt/web_app_dir1/
+```
+
+---
+
+# Day 6 — User Management & Remote Server Management
+
+**Date:** 9 June 2026
+
+---
+
+# Creating Linux Users
+
+Example:
+
+```bash
+sudo useradd -s /bin/bash -m -d /home/devopsadmin devopsadmin
+```
+
+Verify:
+
+```bash
+id devopsadmin
+```
+
+Switch user:
+
+```bash
+su - devopsadmin
+```
+
+---
+
+# Set User Password
+
+As an administrator:
+
+```bash
+sudo passwd devopsadmin
+```
+
+---
+
+# List Linux Users
+
+Linux user information is stored in:
+
+```bash
+/etc/passwd
+```
+
+View:
+
+```bash
+cat /etc/passwd
+```
+
+Groups:
+
+```bash
+cat /etc/group
+```
+
+A more convenient command for user information:
+
+```bash
+id devopsadmin
+```
+
+---
+
+# Linux Groups
+
+Add an existing user to an existing group:
+
+```bash
+sudo usermod -aG docker devopsadmin
+```
+
+Check group membership:
+
+```bash
+groups devopsadmin
+```
+
+or:
+
+```bash
+id devopsadmin
+```
+
+---
+
+# SSH Key Authentication
+
+Generate an SSH key:
+
+```bash
+ssh-keygen -t ed25519
+```
+
+This normally creates:
+
+```text
+~/.ssh/id_ed25519
+~/.ssh/id_ed25519.pub
+```
+
+Where:
+
+```text
+id_ed25519
+    -> Private Key
+
+id_ed25519.pub
+    -> Public Key
+```
+
+### Important Security Rule
+
+```text
+PRIVATE KEY
+    |
+    +---- Keep secret on client
+
+PUBLIC KEY
+    |
+    +---- Install on target server
+          ~/.ssh/authorized_keys
+```
+
+Never copy the private key to the target server.
+
+---
+
+# `authorized_keys`
+
+The target server stores authorized public keys in:
+
+```bash
+~/.ssh/authorized_keys
+```
+
+Example:
+
+```bash
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+```
+
+Add the public key:
+
+```bash
+cat id_ed25519.pub >> ~/.ssh/authorized_keys
+```
+
+Set permissions:
+
+```bash
+chmod 600 ~/.ssh/authorized_keys
+```
+
+---
+
+# SSH to Remote Server
+
+```bash
+ssh username@<SERVER-IP>
+```
+
+Example:
+
+```bash
+ssh adminuser1@172.31.8.222
+```
+
+Using a specific private key:
+
+```bash
+ssh -i ~/.ssh/id_ed25519 adminuser1@172.31.8.222
+```
+
+---
+
+# SCP — Secure Copy
+
+SCP can copy files between systems over SSH.
+
+Example:
+
+```bash
+scp /home/devopsadmin/sourcefile.txt \
+adminuser1@172.31.8.222:/home/adminuser1/
+```
+
+Copy a directory:
+
+```bash
+scp -r mydir adminuser1@172.31.8.222:/home/adminuser1/
+```
+
+---
+
+# Remote Server Management
+
+A DevOps engineer may manage:
+
+```text
+Build Servers
+Test Servers
+Development Servers
+Production Servers
+Web Servers
+Database Servers
+Monitoring Servers
+```
+
+Common tools that interact with Linux infrastructure include:
+
+```text
+Jenkins
+Ansible
+Terraform
+Docker
+Kubernetes
+Prometheus
+```
+
+---
+
+# Authentication vs Authorization
+
+### Authentication
+
+Answers:
+
+> Who are you?
+
+Examples:
+
+* Username/password
+* SSH key
+* Certificate
+* MFA
+
+### Authorization
+
+Answers:
+
+> What are you allowed to do?
+
+Examples:
+
+* Linux permissions
+* Groups
+* `sudo`
+* IAM policies
+* Application permissions
+
+---
+
+# Client-Server Architecture
+
+Example:
+
+```text
+             Client
+                |
+                | SSH
+                v
+          +-----------+
+          | Server 1  |
+          +-----------+
+                |
+                |
+          +-----------+
+          | Server 2  |
+          +-----------+
+```
+
+A DevOps automation server may connect to many target servers.
+
+---
+
+# Environment Flow
+
+A simplified application lifecycle:
+
+```text
+Development
+     |
+     v
+Build
+     |
+     v
+Test
+     |
+     v
+QA
+     |
+     v
+UAT
+     |
+     v
+Production
+```
+
+Build artifacts may include:
+
+```text
+*.war
+*.jar
+*.zip
+*.tar.gz
+```
+
+---
+
+# Day 7 — Shell Scripting Fundamentals
+
+**Date:** 11 June 2026
+
+---
+
+# What is Shell Scripting?
+
+A shell script is a text file containing commands that can be executed by a shell.
+
+For Bash:
+
+```text
+*.sh
+```
+
+Example:
+
+```bash
+#!/bin/bash
+
+echo "Hello World"
+echo "Hello Everyone"
+```
+
+---
+
+# Script Execution
+
+Create:
+
+```bash
+vi sample_script.sh
+```
+
+Give execute permission:
+
+```bash
+chmod 755 sample_script.sh
+```
+
+Execute:
+
+```bash
+./sample_script.sh
+```
+
+Alternatively:
+
+```bash
+bash sample_script.sh
+```
+
+---
+
+# Shebang
+
+A Bash script commonly starts with:
+
+```bash
+#!/bin/bash
+```
+
+The shebang specifies the interpreter used to execute the script.
+
+---
+
+# Variables
+
+Example:
+
+```bash
+NAME="DevOps"
+AGE=25
+```
+
+Access variables:
+
+```bash
+echo "$NAME"
+echo "$AGE"
+```
+
+> Do not put spaces around `=` in Bash variable assignments.
+
+Correct:
+
+```bash
+NAME="DevOps"
+```
+
+Incorrect:
+
+```bash
+NAME = "DevOps"
+```
+
+---
+
+# User Input
+
+Example:
+
+```bash
+#!/bin/bash
+
+echo -n "Enter number 1: "
+read NUM1
+
+echo -n "Enter number 2: "
+read NUM2
+
+SUM=$((NUM1 + NUM2))
+
+echo "The sum is $SUM"
+```
+
+---
+
+# Conditional Statements
+
+## `if`
+
+```bash
+#!/bin/bash
+
+NUM1=5
+NUM2=2
+
+if [ "$NUM1" -gt "$NUM2" ]
+then
+    echo "NUM1 > NUM2"
+fi
+```
+
+---
+
+# `if-else`
+
+```bash
+#!/bin/bash
+
+NUM1=2
+NUM2=5
+
+if [ "$NUM1" -lt "$NUM2" ]
+then
+    echo "NUM1 < NUM2"
+else
+    echo "NUM1 > NUM2"
+fi
+```
+
+---
+
+# `if-elif-else`
+
+```bash
+#!/bin/bash
+
+echo -n "Enter a number: "
+read NUM
+
+if [ "$NUM" -gt 0 ]
+then
+    echo "$NUM is positive"
+elif [ "$NUM" -lt 0 ]
+then
+    echo "$NUM is negative"
+else
+    echo "$NUM is zero"
+fi
+```
+
+---
+
+# Numeric Comparison Operators
+
+| Operator | Meaning               |
+| -------- | --------------------- |
+| `-eq`    | Equal                 |
+| `-ne`    | Not equal             |
+| `-gt`    | Greater than          |
+| `-ge`    | Greater than or equal |
+| `-lt`    | Less than             |
+| `-le`    | Less than or equal    |
+
+Example:
+
+```bash
+if [ "$NUM" -ge 10 ]
+then
+    echo "Number is at least 10"
+fi
+```
+
+---
+
+# Case Statement
+
+```bash
+#!/bin/bash
+
+echo -n "Enter a character: "
+read CHAR
+
+case "$CHAR" in
+    a|A)
+        echo "Vowel"
+        ;;
+    e|E)
+        echo "Vowel"
+        ;;
+    i|I)
+        echo "Vowel"
+        ;;
+    o|O)
+        echo "Vowel"
+        ;;
+    u|U)
+        echo "Vowel"
+        ;;
+    *)
+        echo "Not a vowel"
+        ;;
+esac
+```
+
+---
+
+# Logical Operators
+
+A common Bash style is to use `&&` and `||` or `[[ ... ]]`.
+
+Example:
+
+```bash
+#!/bin/bash
+
+read -p "Enter a number: " NUM
+
+if [[ "$NUM" -ge 10 && "$NUM" -le 20 ]]
+then
+    echo "$NUM is between 10 and 20"
+else
+    echo "$NUM is outside the range"
+fi
+```
+
+---
+
+# For Loop
+
+## Bash-style loop
+
+```bash
+#!/bin/bash
+
+COUNT=0
+
+for i in 0 1 2 3 4
+do
+    echo "Loop count is $COUNT"
+    COUNT=$((COUNT + 1))
+done
+```
+
+---
+
+# C-style For Loop
+
+```bash
+#!/bin/bash
+
+COUNT=0
+
+for ((i=0; i<5; i++))
+do
+    echo "Loop count is $COUNT"
+    COUNT=$((COUNT + 1))
+done
+```
+
+---
+
+# Functions
+
+Functions allow us to define reusable logic.
+
+```bash
+#!/bin/bash
+
+print_hello()
+{
+    echo "====="
+    echo "Hello"
+    echo "====="
+}
+
+print_hello
+print_hello
+print_hello
+```
+
+---
+
+# Command-Line Arguments
+
+Bash provides positional parameters.
+
+| Variable | Meaning             |
+| -------- | ------------------- |
+| `$0`     | Script name         |
+| `$1`     | First argument      |
+| `$2`     | Second argument     |
+| `$3`     | Third argument      |
+| `$#`     | Number of arguments |
+| `$@`     | All arguments       |
+
+Example:
+
+```bash
+#!/bin/bash
+
+echo "Total number of arguments: $#"
+
+echo "Program name: $0"
+echo "1st argument: $1"
+echo "2nd argument: $2"
+echo "3rd argument: $3"
+```
+
+Run:
+
+```bash
+./script1.sh Hello Hai Java
+```
+
+---
+
+# Installing a Package Using an Argument
+
+Example:
+
+```bash
+#!/bin/bash
+
+PACKAGE="$1"
+
+sudo apt update
+sudo apt install "$PACKAGE" -y
+```
+
+Execute:
+
+```bash
+./install_package.sh git
+```
+
+Another example:
+
+```bash
+./install_package.sh nginx
+```
+
+> Always quote variables used as command arguments where appropriate.
+
+---
+
+# Day 8 — Shell Scripting & DevOps Automation
+
+**Date:** 12 June 2026
+
+---
+
+# DevOps Shell Scripting Use Cases
+
+Shell scripts can automate:
+
+* Infrastructure configuration
+* Package installation
+* Application deployment
+* User creation
+* Security updates
+* Server maintenance
+* Backup and restore
+* Log management
+* Process management
+* Remote server operations
+
+---
+
+# Build Server Setup
+
+Example Java/Maven build server setup:
+
+```bash
+#!/bin/bash
+
+echo "Setting up Java Build Server"
+
+sudo apt update -y
+sudo apt install git -y
+sudo apt install "$1" -y
+sudo apt install "$2" -y
+
+echo "Build server setup completed"
+```
+
+Run:
+
+```bash
+./java_build_setup.sh openjdk-17-jdk maven
+```
+
+Verify:
+
+```bash
+java --version
+mvn --version
+git --version
+```
+
+---
+
+# Java + Maven + Docker Setup
+
+```bash
+#!/bin/bash
+
+echo "Setting up Java, Maven and Docker"
+
+sudo apt update -y
+sudo apt install git -y
+sudo apt install "$1" -y
+sudo apt install "$2" -y
+sudo apt install "$3" -y
+
+echo "Setup completed"
+```
+
+Run:
+
+```bash
+./java_dockerbuild_setup.sh openjdk-17-jdk maven docker.io
+```
+
+---
+
+# Test Server Setup
+
+Example:
+
+```bash
+#!/bin/bash
+
+echo "Setting up Test Server"
+
+sudo apt update -y
+sudo apt install "$1" -y
+sudo apt install "$2" -y
+
+echo "Test server setup completed"
+```
+
+Run:
+
+```bash
+./java_test_setup.sh openjdk-17-jdk selenium
+```
+
+> The exact package name for Selenium depends on the testing stack and should be verified before installation.
+
+---
+
+# Web Application Server Setup
+
+Example:
+
+```bash
+#!/bin/bash
+
+echo "Setting up Web Application Server"
+
+sudo apt update -y
+sudo apt install "$1" -y
+sudo apt install "$2" -y
+
+echo "Web server setup completed"
+```
+
+---
+
+# Tomcat Installation
+
+## Prerequisites
+
+Install Java:
+
+```bash
+sudo apt update -y
+sudo apt install openjdk-17-jdk -y
+```
+
+Verify:
+
+```bash
+java --version
+```
+
+---
+
+## Download Tomcat
+
+Download a supported Tomcat release from the Apache Tomcat project rather than relying on an old archived version.
+
+Example workflow:
+
+```bash
+cd /opt
+```
+
+Download the required Tomcat archive:
+
+```bash
+wget <TOMCAT_DOWNLOAD_URL>
+```
+
+Extract:
+
+```bash
+tar -xvzf <TOMCAT_ARCHIVE>.tar.gz
+```
+
+Rename:
+
+```bash
+mv <TOMCAT_DIRECTORY> tomcat
+```
+
+---
+
+# Starting Tomcat
+
+Go to:
+
+```bash
+cd /opt/tomcat/bin
+```
+
+Start:
+
+```bash
+./startup.sh
+```
+
+Stop:
+
+```bash
+./shutdown.sh
+```
+
+Tomcat commonly listens on:
+
+```text
+8080
+```
+
+---
+
+# Environment Variables
+
+Environment variables can be configured through shell startup files or system-wide configuration.
+
+Example:
+
+```bash
+export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+export MAVEN_HOME="/usr/share/maven"
+
+export PATH="$PATH:$JAVA_HOME/bin:$MAVEN_HOME/bin"
+```
+
+Check:
+
+```bash
+echo "$JAVA_HOME"
+```
+
+```bash
+echo "$MAVEN_HOME"
+```
+
+```bash
+echo "$PATH"
+```
+
+For system-wide configuration, `/etc/profile` can be used, although `/etc/environment` or dedicated files under `/etc/profile.d/` may be more appropriate depending on the requirement.
+
+---
+
+# `sed` Command
+
+`sed` is commonly used for text processing and substitution.
+
+Example:
+
+```bash
+echo "Bash Scripting Bash Language" | sed 's/Bash/Perl/'
+```
+
+Output:
+
+```text
+Perl Scripting Bash Language
+```
+
+Replace all occurrences:
+
+```bash
+echo "Bash Scripting Bash Language" | sed 's/Bash/Perl/g'
+```
+
+Output:
+
+```text
+Perl Scripting Perl Language
+```
+
+---
+
+# DevOps Automation Architecture
+
+A simplified DevOps workflow:
+
+```text
+                 Git Repository
+                       |
+                       v
+                +-------------+
+                | Build Server|
+                +-------------+
+                       |
+                    Build
+                       |
+                       v
+                 Artifact
+                (.jar/.war)
+                       |
+                       v
+                +-------------+
+                | Test Server |
+                +-------------+
+                       |
+                      Test
+                       |
+                       v
+                    QA/UAT
+                       |
+                       v
+              +------------------+
+              | Production       |
+              | Servers          |
+              +------------------+
+```
+
+---
+
+# Shell Scripting in DevOps
+
+Shell scripting can automate repetitive administration tasks.
+
+Example:
+
+```text
+Manual Process
+     |
+     v
+Install packages
+Create users
+Configure files
+Set permissions
+Restart services
+Deploy application
+     |
+     v
+Shell Script
+     |
+     v
+Automated Process
+```
+
+---
+
+# Important Linux Commands Cheat Sheet
+
+| Command     | Purpose                     |
+| ----------- | --------------------------- |
+| `pwd`       | Current directory           |
+| `cd`        | Change directory            |
+| `ls`        | List files                  |
+| `ls -la`    | List all files with details |
+| `mkdir`     | Create directory            |
+| `touch`     | Create empty file           |
+| `cat`       | Display file contents       |
+| `cp`        | Copy                        |
+| `mv`        | Move / Rename               |
+| `rm`        | Remove                      |
+| `vi`        | Edit file                   |
+| `chmod`     | Change permissions          |
+| `chown`     | Change ownership            |
+| `useradd`   | Create user                 |
+| `passwd`    | Set password                |
+| `usermod`   | Modify user                 |
+| `groups`    | Show group membership       |
+| `ssh`       | Remote login                |
+| `scp`       | Secure file copy            |
+| `apt`       | Package management          |
+| `systemctl` | Manage services             |
+| `which`     | Find executable             |
+| `sed`       | Stream editing              |
+| `echo`      | Print text                  |
+| `read`      | Read input                  |
+
+---
+
+# Important Bash Concepts
+
+```text
+Variables
+   |
+   +-- String
+   +-- Number
+   +-- Command output
+   |
+Conditions
+   |
+   +-- if
+   +-- elif
+   +-- else
+   +-- case
+   |
+Loops
+   |
+   +-- for
+   +-- while
+   |
+Functions
+   |
+   +-- Reusable logic
+   |
+Arguments
+   |
+   +-- $1
+   +-- $2
+   +-- $@
+   +-- $#
+   |
+Commands
+   |
+   +-- apt
+   +-- systemctl
+   +-- ssh
+   +-- scp
+   +-- sed
+```
+
+---
+
+# Recommended Lab Exercises
+
+## Lab 1 — Linux Navigation
+
+Practice:
+
+```bash
+pwd
+ls
+ls -la
+cd /
+cd ~
+cd ..
+```
+
+---
+
+## Lab 2 — File Management
+
+Create:
+
+```text
+devops/
+├── scripts/
+├── configs/
+├── logs/
+└── artifacts/
+```
+
+Commands:
+
+```bash
+mkdir -p devops/{scripts,configs,logs,artifacts}
+```
+
+Create files:
+
+```bash
+touch devops/configs/app.conf
+touch devops/logs/app.log
+```
+
+---
+
+## Lab 3 — Permissions
+
+Create a script:
+
+```bash
+touch hello.sh
+```
+
+Add:
+
+```bash
+#!/bin/bash
+echo "Hello DevOps"
+```
+
+Make executable:
+
+```bash
+chmod 755 hello.sh
+```
+
+Execute:
+
+```bash
+./hello.sh
+```
+
+---
+
+## Lab 4 — User Management
+
+Create:
+
+```bash
+sudo useradd -s /bin/bash -m devopsadmin
+```
+
+Set password:
+
+```bash
+sudo passwd devopsadmin
+```
+
+Check:
+
+```bash
+id devopsadmin
+```
+
+---
+
+## Lab 5 — SSH Key Authentication
+
+Generate:
+
+```bash
+ssh-keygen -t ed25519
+```
+
+Install the public key on the target server:
+
+```bash
+ssh-copy-id username@target-server
+```
+
+Then connect:
+
+```bash
+ssh username@target-server
+```
+
+---
+
+## Lab 6 — SCP
+
+Copy a file:
+
+```bash
+scp application.jar username@target-server:/opt/app/
+```
+
+---
+
+## Lab 7 — Shell Script
+
+Create:
+
+```bash
+vi system_info.sh
+```
+
+Example:
+
+```bash
+#!/bin/bash
+
+echo "Hostname:"
+hostname
+
+echo "Current User:"
+whoami
+
+echo "Current Directory:"
+pwd
+
+echo "Disk Usage:"
+df -h
+
+echo "Memory:"
+free -h
+```
+
+Make executable:
+
+```bash
+chmod 755 system_info.sh
+```
+
+Run:
+
+```bash
+./system_info.sh
+```
+
+---
+
+# DevOps Perspective — Key Takeaways
+
+### Linux
+
+Linux is one of the most important operating-system environments in DevOps.
+
+### AWS EC2
+
+EC2 provides virtual machines where Linux-based workloads can be deployed and managed.
+
+### SSH
+
+SSH provides secure remote administration.
+
+### Permissions
+
+Linux permissions control access to files and directories.
+
+### Users & Groups
+
+Users and groups provide identity and access management at the operating-system level.
+
+### Package Managers
+
+`apt`, `dnf`, and related package managers simplify software installation and maintenance.
+
+### Shell Scripting
+
+Shell scripts automate repetitive operational tasks.
+
+### Remote Administration
+
+SSH and SCP enable secure server-to-server administration and file transfer.
+
+### Automation
+
+The ultimate DevOps objective is to reduce repetitive manual work through automation.
+
+---
+
+# Learning Path
+
+```text
+Linux Fundamentals
+        |
+        v
+Linux Commands
+        |
+        v
+Files & Permissions
+        |
+        v
+Users & Groups
+        |
+        v
+SSH & Remote Servers
+        |
+        v
+Shell Scripting
+        |
+        v
+Package Automation
+        |
+        v
+Application Deployment
+        |
+        v
+Jenkins / CI-CD
+        |
+        v
+Docker
+        |
+        v
+Kubernetes
+        |
+        v
+Terraform / Infrastructure as Code
+        |
+        v
+Ansible / Configuration Management
+        |
+        v
+Cloud & DevOps
+```
+
+---
+
+## 🔐 Security Reminders
+
+* Never commit `.pem` or private SSH keys to GitHub.
+* Never expose passwords or API keys in shell scripts.
+* Use least-privilege access.
+* Avoid unnecessary `sudo`.
+* Be extremely careful with `rm -rf`.
+* Restrict AWS Security Group inbound rules.
+* Enable MFA on AWS accounts.
+* Do not expose SSH (`22`) to the entire internet unless there is a specific reason.
+* Prefer key-based authentication over password-based SSH where appropriate.
+* Keep operating-system packages updated.
+
+---
+
+## 📌 References
+
+* AWS Console: https://aws.amazon.com/console/
+* AWS Account Creation: https://aws.amazon.com/resources/create-account/
+* Apache Tomcat: https://tomcat.apache.org/
+
+---
+
+## 📝 Notes
+
+These notes are focused on **Linux administration from a DevOps perspective** and are intended for hands-on practice using Ubuntu Linux and AWS EC2.
+
+Commands may vary depending on:
+
+* Linux distribution
+* Ubuntu version
+* Package availability
+* User permissions
+* System configuration
+* Cloud/network configuration
+
+Always verify commands in the target environment before applying them to production systems.
