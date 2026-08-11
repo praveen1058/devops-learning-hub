@@ -1,0 +1,263 @@
+# Continuous Monitoring
+
+## Continuous Monitoring
+
+* Ensures **business continuity**.
+* Ensures that applications and infrastructure are **up and running**.
+* Helps identify performance issues, failures, and resource utilization before they affect users.
+
+## Infrastructure Monitoring
+
+Infrastructure monitoring focuses on:
+
+* Production Servers
+* Databases
+* Networks
+* Storage
+
+### Monitoring Tools
+
+* Prometheus
+* Grafana
+* Dynatrace
+* Nagios
+* Splunk
+
+### Alert Management
+
+* Alerts can be configured based on defined threshold limits.
+* Example:
+
+  * CPU utilization > **75%**
+  * Memory utilization > **75%**
+  * Disk utilization > **75%**
+
+---
+
+# Application Monitoring
+
+Application monitoring focuses on the health and performance of applications.
+
+Example:
+
+* Microservices
+* Database calls
+* Application response time
+* Application errors
+* Service availability
+
+### Application Monitoring Tools
+
+* AppDynamics
+* Datadog
+
+---
+
+# Prometheus & Grafana
+
+## Prometheus
+
+**Prometheus** is a monitoring and metrics collection tool.
+
+It is mainly used to:
+
+* Monitor infrastructure.
+* Collect metrics from target systems.
+* Store time-series monitoring data.
+* Evaluate monitoring conditions.
+* Generate alerts based on configured rules.
+
+## Grafana
+
+**Grafana** is a visualization and dashboarding tool.
+
+It is used to:
+
+* Visualize monitoring metrics.
+* Create monitoring dashboards.
+* Display graphs and charts.
+* Monitor infrastructure health.
+* Create dashboards using data collected by Prometheus.
+
+### Prometheus vs Grafana
+
+| Tool       | Purpose                                   |
+| ---------- | ----------------------------------------- |
+| Prometheus | Collects and stores monitoring metrics    |
+| Grafana    | Visualizes metrics and creates dashboards |
+
+---
+
+# Prometheus & Grafana Architecture
+
+A basic monitoring architecture consists of:
+
+```text
+                Monitoring Server
+             ┌─────────────────────┐
+             │                     │
+             │     Prometheus      │
+             │         +           │
+             │      Grafana        │
+             │                     │
+             └──────────┬──────────┘
+                        │
+                        │ Collect Metrics
+                        ▼
+              ┌───────────────────┐
+              │   Target Server   │
+              │                   │
+              │   Node Exporter   │
+              └───────────────────┘
+```
+
+## Monitoring Server
+
+The dedicated monitoring server contains:
+
+* Prometheus
+* Grafana
+
+Its responsibility is to collect, store, query, and visualize monitoring metrics.
+
+## Target Server
+
+The target server is the infrastructure that needs to be monitored.
+
+A **Node Exporter** agent is installed on the target server to expose system-level metrics.
+
+Examples of metrics:
+
+* CPU utilization
+* Memory utilization
+* Disk utilization
+* Network statistics
+* System uptime
+
+---
+
+# Setup Prometheus & Grafana
+
+## Environment
+
+Create two Ubuntu virtual machines/EC2 instances:
+
+### VM1 — Monitoring Server
+
+Install:
+
+* Prometheus
+* Grafana
+
+Purpose:
+
+* Collect metrics.
+* Store metrics.
+* Visualize metrics.
+* Create monitoring dashboards.
+
+### VM2 — Target Server
+
+Install:
+
+* Node Exporter
+
+Purpose:
+
+* Expose infrastructure/system metrics that Prometheus can collect.
+
+## Monitoring Flow
+
+```text
+Target Server
+     │
+     │ Node Exporter
+     │
+     ▼
+Prometheus
+     │
+     │ Query Metrics
+     ▼
+Grafana
+     │
+     ▼
+Monitoring Dashboard
+```
+
+---
+
+# Basic Monitoring Setup Steps
+
+### 1. Create Monitoring Server
+
+Launch an Ubuntu VM/EC2 instance.
+
+Install:
+
+```text
+Prometheus
+Grafana
+```
+
+### 2. Create Target Server
+
+Launch another Ubuntu VM/EC2 instance.
+
+Install:
+
+```text
+Node Exporter
+```
+
+### 3. Configure Prometheus
+
+Configure Prometheus with the target server's address so that it can collect metrics from Node Exporter.
+
+### 4. Verify Metrics
+
+Confirm that Prometheus can successfully scrape metrics from the target server.
+
+### 5. Configure Grafana
+
+Configure Grafana to use Prometheus as its data source.
+
+### 6. Create Dashboard
+
+Create Grafana dashboards to visualize:
+
+* CPU
+* Memory
+* Disk
+* Network
+* System availability
+
+---
+
+# Overall Architecture
+
+```text
+                    ┌──────────────────────┐
+                    │   Monitoring Server  │
+                    │                      │
+                    │    Prometheus        │
+                    │         │            │
+                    │         ▼            │
+                    │      Grafana          │
+                    └──────────┬───────────┘
+                               │
+                         Monitoring
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │    Target Server     │
+                    │                      │
+                    │    Node Exporter     │
+                    │                      │
+                    │ CPU / RAM / Disk /   │
+                    │ Network / Uptime     │
+                    └──────────────────────┘
+```
+
+**Key concept:**
+
+> **Node Exporter exposes metrics → Prometheus collects and stores metrics → Grafana visualizes the metrics in dashboards.**
