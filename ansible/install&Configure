@@ -1,0 +1,277 @@
+# Ansible Installation & Configuration
+
+## 1. Setup Ansible Architecture
+
+Launch **3 Ubuntu 24.04 EC2 instances**:
+
+```text
+Ansible Controller (VM)
+        |
+        | SSH
+        |
+   -----+-----
+   |         |
+   ↓         ↓
+Node1      Node2
+(VM)       (VM)
+```
+
+* 1 instance for the **Ansible Controller**
+* 2 instances as **Ansible Nodes**
+* Use Ubuntu 24.04 for all instances.
+
+---
+
+# 2. Configure Ansible Nodes
+
+Login to **Node1 and Node2** and perform the following configuration.
+
+### Create Ansible User
+
+```bash
+sudo -i
+
+apt update -y
+
+useradd ansibleadmin -s /bin/bash -m -d /home/ansibleadmin
+
+passwd ansibleadmin
+```
+
+Set a password for `ansibleadmin`.
+
+### Enable SSH Password Authentication
+
+Edit the SSH configuration:
+
+```bash
+vi /etc/ssh/sshd_config
+```
+
+Enable:
+
+```text
+PasswordAuthentication yes
+```
+
+Reload the SSH service:
+
+```bash
+service ssh reload
+```
+
+### Configure Sudo Access
+
+Edit the sudoers configuration:
+
+```bash
+visudo
+```
+
+Add:
+
+```text
+ansibleadmin ALL=(ALL) NOPASSWD: ALL
+```
+
+Switch to the Ansible user:
+
+```bash
+su - ansibleadmin
+```
+
+---
+
+# 3. Install Ansible on the Controller
+
+Refer to the official Ansible documentation:
+
+[Ansible Installation Guide for Ubuntu](https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html?utm_source=chatgpt.com#installing-ansible-on-ubuntu)
+
+Login to the **Ansible Controller**:
+
+```bash
+sudo -i
+```
+
+### Install Ansible
+
+```bash
+apt update -y
+
+apt install software-properties-common -y
+
+add-apt-repository --yes --update ppa:ansible/ansible
+
+apt update -y
+
+apt install ansible -y
+```
+
+Verify the installation:
+
+```bash
+ansible --version
+```
+
+---
+
+# 4. Ansible Configuration Directory
+
+The default Ansible configuration directory is:
+
+```text
+/etc/ansible
+```
+
+Important files/directories:
+
+```text
+/etc/ansible/
+├── hosts       # Default Inventory File
+├── ansible.cfg # Ansible Configuration File
+└── roles/      # Ansible Roles
+```
+
+---
+
+# 5. Create SSH User on Ansible Controller
+
+Create the `devopsadmin` user:
+
+```bash
+useradd devopsadmin -s /bin/bash -m -d /home/devopsadmin
+
+su - devopsadmin
+```
+
+Generate an SSH key pair:
+
+```bash
+ssh-keygen -t ecdsa -b 521
+```
+
+Verify the generated keys:
+
+```bash
+ls ~/.ssh
+```
+
+The directory should contain:
+
+```text
+id_ecdsa
+id_ecdsa.pub
+```
+
+* `id_ecdsa` → Private Key
+* `id_ecdsa.pub` → Public Key
+
+---
+
+# 6. Configure SSH Authentication on Ansible Nodes
+
+On **Node1 and Node2**, create the SSH directory for `ansibleadmin`:
+
+```bash
+mkdir -p /home/ansibleadmin/.ssh
+```
+
+Add the **Controller's public key** to:
+
+```text
+/home/ansibleadmin/.ssh/authorized_keys
+```
+
+The public key is obtained from:
+
+```text
+/home/devopsadmin/.ssh/id_ecdsa.pub
+```
+
+Set the appropriate permissions:
+
+```bash
+chmod 600 /home/ansibleadmin/.ssh/*
+```
+
+---
+
+# 7. Test SSH Connectivity
+
+From the Ansible Controller, connect to each node using its **private IP address**:
+
+```bash
+ssh ansibleadmin@<Node1_Private_IP>
+
+ssh ansibleadmin@<Node2_Private_IP>
+```
+
+The Controller should be able to connect to both nodes without requiring a password.
+
+---
+
+# 8. Configure Ansible Inventory
+
+Ensure the `devopsadmin` user has access to the Ansible configuration:
+
+```bash
+chown -R devopsadmin:devopsadmin /etc/ansible
+```
+
+Edit the default inventory file:
+
+```bash
+vi /etc/ansible/hosts
+```
+
+Configure the target nodes:
+
+```ini
+[testnodes]
+samplenode1 ansible_host=<Node1_Private_IP> ansible_user=ansibleadmin
+samplenode2 ansible_host=<Node2_Private_IP> ansible_user=ansibleadmin
+```
+
+Example:
+
+```ini
+[testnodes]
+samplenode1 ansible_host=172.31.x.x ansible_user=ansibleadmin
+samplenode2 ansible_host=172.31.x.x ansible_user=ansibleadmin
+```
+
+---
+
+# 9. Ansible Architecture After Configuration
+
+```text
+                    Ansible Controller
+                    Ubuntu 24.04
+                         |
+                         | SSH
+                         |
+              +----------+----------+
+              |                     |
+              ↓                     ↓
+        Ansible Node1         Ansible Node2
+        Ubuntu 24.04          Ubuntu 24.04
+        ansibleadmin          ansibleadmin
+```
+
+### Configuration Summary
+
+```text
+Controller
+    |
+    +-- Ansible
+    +-- devopsadmin
+    +-- SSH Private Key
+    +-- /etc/ansible/hosts
+    |
+    +------ SSH ------> Node1
+    |
+    +------ SSH ------> Node2
+```
+
+The **Ansible Controller** uses the inventory file to identify the target nodes and connects to them through SSH using the configured `ansibleadmin` user.
