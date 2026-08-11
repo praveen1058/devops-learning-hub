@@ -1,0 +1,495 @@
+# Prometheus, Node Exporter & Grafana Installation
+
+## Monitoring Architecture
+
+Launch **2 Ubuntu/EC2 instances**:
+
+```text
+VM1 — Monitoring Server
+    ├── Prometheus
+    └── Grafana
+
+VM2 — Target Server
+    └── Node Exporter
+```
+
+### Required Ports
+
+For the demo environment, allow the required ports in the EC2 Security Group:
+
+| Port | Component     | Purpose               |
+| ---: | ------------- | --------------------- |
+| 9090 | Prometheus    | Prometheus Web UI     |
+| 3000 | Grafana       | Grafana Web UI        |
+| 9100 | Node Exporter | Node Exporter metrics |
+
+> For production, avoid allowing these ports from `0.0.0.0/0`. Restrict access to trusted IPs or security groups.
+
+---
+
+# Install Prometheus
+
+Prometheus is installed on the **Monitoring Server**.
+
+Official download page:
+
+https://prometheus.io/download/
+
+### Download Prometheus
+
+```bash
+sudo -i
+
+yum update -y
+
+wget https://github.com/prometheus/prometheus/releases/download/v2.38.0/prometheus-2.38.0.linux-amd64.tar.gz
+```
+
+Extract the archive:
+
+```bash
+tar -zxvf prometheus-2.38.0.linux-amd64.tar.gz
+```
+
+The Prometheus installation directory will be:
+
+```text
+/root/prometheus-2.38.0.linux-amd64
+```
+
+---
+
+# Create Prometheus Systemd Service
+
+Create the service file:
+
+```bash
+sudo vi /etc/systemd/system/prometheus.service
+```
+
+Add:
+
+```ini
+[Unit]
+Description=Prometheus Server
+Documentation=https://prometheus.io/docs/introduction/overview/
+After=network-online.target
+
+[Service]
+User=root
+Restart=on-failure
+
+ExecStart=/root/prometheus-2.38.0.linux-amd64/prometheus \
+  --config.file=/root/prometheus-2.38.0.linux-amd64/prometheus.yml
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Reload systemd:
+
+```bash
+sudo systemctl daemon-reload
+```
+
+Start Prometheus:
+
+```bash
+sudo systemctl start prometheus
+```
+
+Check status:
+
+```bash
+sudo systemctl status prometheus
+```
+
+Enable Prometheus at boot:
+
+```bash
+sudo systemctl enable prometheus
+```
+
+Prometheus Web UI:
+
+```text
+http://<PROMETHEUS_PUBLIC_IP>:9090
+```
+
+---
+
+# Install Node Exporter
+
+Node Exporter is installed on the **Target Server**.
+
+Node Exporter exposes operating-system and hardware metrics that Prometheus can collect.
+
+Official download page:
+
+https://prometheus.io/download/
+
+### Download Node Exporter
+
+```bash
+sudo -i
+
+wget https://github.com/prometheus/node_exporter/releases/download/v1.4.0-rc.0/node_exporter-1.4.0-rc.0.linux-amd64.tar.gz
+```
+
+Extract:
+
+```bash
+tar -zxvf node_exporter-1.4.0-rc.0.linux-amd64.tar.gz
+```
+
+Installation directory:
+
+```text
+/root/node_exporter-1.4.0-rc.0.linux-amd64
+```
+
+---
+
+# Create Node Exporter Systemd Service
+
+Create:
+
+```bash
+sudo vi /etc/systemd/system/node_exporter.service
+```
+
+Add:
+
+```ini
+[Unit]
+Description=Node Exporter
+Documentation=https://prometheus.io/docs/guides/node-exporter/
+After=network-online.target
+
+[Service]
+User=root
+Restart=on-failure
+
+ExecStart=/root/node_exporter-1.4.0-rc.0.linux-amd64/node_exporter
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Reload systemd:
+
+```bash
+sudo systemctl daemon-reload
+```
+
+Start Node Exporter:
+
+```bash
+sudo systemctl start node_exporter
+```
+
+Check status:
+
+```bash
+sudo systemctl status node_exporter
+```
+
+Enable at boot:
+
+```bash
+sudo systemctl enable node_exporter
+```
+
+Check the target server's hostname and IP:
+
+```bash
+hostname
+hostname -i
+```
+
+Node Exporter listens on:
+
+```text
+9100
+```
+
+---
+
+# Configure Prometheus to Monitor Target Server
+
+Go to the **Prometheus Monitoring Server**.
+
+Navigate to the Prometheus installation directory:
+
+```bash
+cd /root/prometheus-2.38.0.linux-amd64
+```
+
+Edit the configuration file:
+
+```bash
+vi prometheus.yml
+```
+
+Add the target server under `scrape_configs`.
+
+Example:
+
+```yaml
+scrape_configs:
+
+  - job_name: "node_exporter"
+
+    static_configs:
+      - targets:
+          - "172.31.9.192:9100"
+```
+
+Use the **private IP address** of the Target Server when both EC2 instances are in the same VPC.
+
+Restart Prometheus:
+
+```bash
+sudo systemctl restart prometheus
+```
+
+Check status:
+
+```bash
+sudo systemctl status prometheus
+```
+
+---
+
+# Verify Target in Prometheus
+
+Open:
+
+```text
+http://<PROMETHEUS_PUBLIC_IP>:9090
+```
+
+In the Prometheus query field, execute:
+
+```promql
+up
+```
+
+If the target is successfully monitored, Prometheus should return:
+
+```text
+up = 1
+```
+
+### Meaning
+
+```text
+1 = Target is UP
+0 = Target is DOWN
+```
+
+---
+
+# Install Grafana
+
+Grafana is installed on the **Monitoring Server**.
+
+Official website:
+
+https://grafana.com/
+
+For a Red Hat/CentOS/RHEL/Fedora-based system, install the RPM package:
+
+```bash
+sudo yum install -y https://dl.grafana.com/oss/release/grafana-11.1.0-1.x86_64.rpm
+```
+
+Enable Grafana:
+
+```bash
+sudo systemctl enable grafana-server.service
+```
+
+Start Grafana:
+
+```bash
+sudo systemctl start grafana-server.service
+```
+
+Check status:
+
+```bash
+sudo systemctl status grafana-server.service
+```
+
+Grafana Web UI:
+
+```text
+http://<GRAFANA_PUBLIC_IP>:3000
+```
+
+---
+
+# Configure Prometheus as Grafana Data Source
+
+Login to Grafana:
+
+```text
+http://<GRAFANA_PUBLIC_IP>:3000
+```
+
+Go to:
+
+```text
+Settings
+    ↓
+Data Sources
+    ↓
+Add Data Source
+    ↓
+Prometheus
+```
+
+Enter a name:
+
+```text
+Prometheus
+```
+
+Enter the Prometheus URL.
+
+If Grafana and Prometheus are installed on the **same server**, preferably use:
+
+```text
+http://localhost:9090
+```
+
+If they are on separate servers:
+
+```text
+http://<PROMETHEUS_PRIVATE_IP>:9090
+```
+
+Click:
+
+```text
+Save & Test
+```
+
+A successful connection confirms that Grafana can communicate with Prometheus.
+
+---
+
+# Prometheus Query Examples
+
+## Check Target Availability
+
+```promql
+up
+```
+
+## CPU Usage
+
+```promql
+sum by(mode)(irate(node_cpu_seconds_total{mode!="idle"}[5m])) > 0
+```
+
+## System Uptime
+
+```promql
+time() - node_boot_time_seconds{}
+```
+
+## Memory Utilization
+
+```promql
+100 * (
+  1 -
+  (
+    avg_over_time(node_memory_MemFree_bytes[10m])
+    +
+    avg_over_time(node_memory_Cached_bytes[10m])
+    +
+    avg_over_time(node_memory_Buffers_bytes[10m])
+  )
+  /
+  avg_over_time(node_memory_MemTotal_bytes[10m])
+)
+```
+
+---
+
+# Complete Monitoring Flow
+
+```text
+                  Monitoring Server
+             ┌────────────────────────┐
+             │                        │
+             │      Prometheus        │
+             │          │             │
+             │          ▼             │
+             │       Grafana          │
+             │                        │
+             └──────────┬─────────────┘
+                        │
+                 Collect Metrics
+                        │
+                        ▼
+             ┌────────────────────────┐
+             │     Target Server      │
+             │                        │
+             │    Node Exporter       │
+             │                        │
+             │  CPU / Memory / Disk   │
+             │  Network / Uptime      │
+             └────────────────────────┘
+```
+
+### Overall Process
+
+```text
+Node Exporter
+      ↓
+Exposes System Metrics
+      ↓
+Prometheus
+      ↓
+Collects & Stores Metrics
+      ↓
+Grafana
+      ↓
+Creates Dashboards & Visualizations
+```
+
+## Important Ports
+
+```text
+Prometheus      → 9090
+Grafana         → 3000
+Node Exporter   → 9100
+```
+
+## Key Commands
+
+```bash
+# Prometheus
+systemctl start prometheus
+systemctl stop prometheus
+systemctl restart prometheus
+systemctl status prometheus
+systemctl enable prometheus
+
+# Node Exporter
+systemctl start node_exporter
+systemctl stop node_exporter
+systemctl restart node_exporter
+systemctl status node_exporter
+systemctl enable node_exporter
+
+# Grafana
+systemctl start grafana-server
+systemctl stop grafana-server
+systemctl restart grafana-server
+systemctl status grafana-server
+systemctl enable grafana-server
+```
