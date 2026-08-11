@@ -1,0 +1,1536 @@
+
+
+### Version Control System (VCS)
+
+#### Continuous Development
+
+Developers create source code using technologies such as:
+
+* Java
+* .NET
+* Python
+
+The source code is stored in **Source Code Repositories**, such as GitHub.
+
+### What is Version Control System?
+
+A **Version Control System (VCS)** is used to:
+
+* Version-control source code changes
+* Track source code changes
+* Maintain the history of changes
+* Restore previous versions when required
+
+### Example Without VCS
+
+```text
+Developer1:
+
+d:/Workspace
+
+index.html
+
+<html>
+----
+---
+-
+-
+-
+-
+-
+-
+</html>
+
+Save index.html
+Test index.html
+
+Later:
+
+index.html
+
+<html>
+----
+---
+-aadf
+----
+---
+--
+--
+--
+----
+</html>
+
+Save index.html
+Test index.html
+```
+
+### Example With VCS
+
+```text
+d:/Workspace
+
+index.html
+
+<html>
+----
+---
+-
+-
+-
+-
+-
+-
+</html>
+
+Save using VCS
+    ↓
+Version 1.0
+
+Later:
+
+Save using VCS → Version 1.1
+Save using VCS → Version 1.2
+Save using VCS → Version 1.3
+Save using VCS → Version 1.4
+Save using VCS → Version 1.5
+```
+
+A version can be represented using:
+
+* Version Number
+* Tag
+* Commit ID
+
+### Types of VCS
+
+1. Local VCS
+2. Centralized VCS
+3. Distributed VCS
+
+---
+
+## Git
+
+**Git** is an open-source Distributed Version Control System.
+
+Git is used to:
+
+* Version-control source code changes
+* Track source code changes
+* Maintain source code history
+* Perform parallel development using branching
+
+### Git vs GitHub
+
+| Tool   | Purpose                               |
+| ------ | ------------------------------------- |
+| Git    | Manages local repositories            |
+| GitHub | Hosts and manages remote repositories |
+
+### Install Git
+
+Official Git installation page:
+
+https://git-scm.com/install/
+
+#### Windows
+
+Install **Git for Windows/x64 Setup**.
+
+Available tools include:
+
+* Git Bash
+* Git CMD
+* Git GUI
+
+#### macOS
+
+Use the Mac Terminal.
+
+Check the Git version:
+
+```bash
+git --version
+```
+
+---
+
+# Day 10 — 15th June 2026
+
+## Git File Workflow
+
+Git follows a distributed version-control model.
+
+### Distributed VCS
+
+```text
+Remote Repository Server
+GitHub / GitLab / Bitbucket / Azure Repos
+
+                ↑
+              git push
+                |
+                ↓
+
+Local Machine
+
+Working Directory
+        |
+      git add
+        ↓
+Staging Area / Index
+        |
+    git commit
+        ↓
+Local Repository
+        |
+      git push
+        ↓
+Remote Repository
+```
+
+### Git File Workflow
+
+```text
+Working Directory
+        |
+        | git add
+        ↓
+Staging Area
+        |
+        | git commit
+        ↓
+Local Repository
+        |
+        | git push
+        ↓
+Remote Repository
+```
+
+Example:
+
+```text
+index.html
+    ↓ git add
+index.html in Staging Area
+    ↓ git commit
+index.html in Local Repository
+    ↓ git push
+index.html in Remote Repository
+```
+
+---
+
+## Common Git Commands
+
+### `git clone`
+
+Copies an entire remote repository to the local machine.
+
+```bash
+git clone <remote_repository_url>
+```
+
+### `git add`
+
+Adds changes from the working directory to the staging area.
+
+```bash
+git add <file_name>
+```
+
+### `git commit`
+
+Commits staged changes to the local repository.
+
+```bash
+git commit -m "Valid commit message"
+```
+
+### `git push`
+
+Pushes committed changes from the local repository to the remote repository.
+
+```bash
+git push
+```
+
+### `git fetch`
+
+Checks for incremental changes from the remote repository and updates remote-tracking information in the local repository.
+
+`git fetch` does **not** update the working directory.
+
+### `git pull`
+
+Downloads changes from the remote repository and integrates them into the current branch.
+
+Conceptually:
+
+```text
+git pull = git fetch + git merge
+```
+
+As a common practice, use `git pull` when you need to synchronize your local branch with the remote branch.
+
+### Fork
+
+A **fork** creates a copy of a remote repository under another remote repository/account.
+
+---
+
+## `git init`
+
+Initializes a Git repository.
+
+```bash
+git init
+```
+
+It creates the `.git/` directory.
+
+Depending on the Git configuration/version, the initial branch is commonly named `main`; older repositories may use `master`.
+
+---
+
+## Git Demo
+
+Create a workspace:
+
+```bash
+cd d:
+mkdir praveencloud-1506
+cd praveencloud-1506
+
+mkdir repo1
+cd repo1
+```
+
+Initialize the repository:
+
+```bash
+git init
+```
+
+Check repository status:
+
+```bash
+git status
+```
+
+Check commit history:
+
+```bash
+git log
+```
+
+List files:
+
+```bash
+ls
+```
+
+List files tracked by Git:
+
+```bash
+git ls-files
+```
+
+---
+
+## Git Configuration
+
+### Global Configuration
+
+Global configuration applies to all repositories for the current user.
+
+```bash
+git config --global user.name "Loksai"
+git config --global user.email "Loksai@example.com"
+```
+
+### Local Configuration
+
+Local configuration applies only to the current repository.
+
+```bash
+git config user.name "Loksai"
+git config user.email "Loksai@example.com"
+```
+
+---
+
+## Basic Git Workflow
+
+```bash
+cd d:
+mkdir pl-devops-1506
+cd pl-devops-1506
+
+mkdir repo1
+cd repo1
+
+git init
+
+git config --global user.name "Loksai"
+git config --global user.email "Loksai@example.com"
+
+echo "rec1" >> file1.txt
+
+git add file1.txt
+
+git commit -m "Created file1.txt"
+```
+
+---
+
+# Day 11 — 16th June 2026
+
+## Git Miscellaneous Commands
+
+### `git add`
+
+Add a specific file:
+
+```bash
+git add <file_name>
+```
+
+Add multiple files:
+
+```bash
+git add file1.txt file2.txt
+```
+
+Add files matching patterns:
+
+```bash
+git add *.java *.md
+```
+
+Add all changes:
+
+```bash
+git add .
+```
+
+`.` represents the current directory and its contents.
+
+---
+
+## Undo Staged Changes
+
+### `git rm --cached`
+
+Removes a file from the staging area while keeping it in the working directory.
+
+```bash
+git rm --cached <file_name>
+```
+
+### `git rm -f`
+
+Removes the file from the staging area and working directory.
+
+```bash
+git rm -f <file_name>
+```
+
+> Be careful with `git rm -f` because it can delete the working-copy file.
+
+---
+
+## `git commit`
+
+Commit staged changes:
+
+```bash
+git commit -m "Created m2.txt"
+```
+
+Examples of useful commit messages:
+
+```bash
+git commit -m "Created m2.txt"
+
+git commit -m "Rel2607 - created m2.txt"
+
+git commit -m "CR-1001 - created m2.txt"
+```
+
+---
+
+## `git log`
+
+Display commit history:
+
+```bash
+git log
+```
+
+Display compact history:
+
+```bash
+git log --oneline
+```
+
+Display the latest 3 commits:
+
+```bash
+git log -3
+```
+
+```bash
+git log --oneline -3
+```
+
+Display history for a specific file:
+
+```bash
+git log --oneline -- m2.txt
+```
+
+```bash
+git log -3 -- m2.txt
+```
+
+---
+
+## `git show`
+
+Display details of a specific commit:
+
+```bash
+git show <commit_id>
+```
+
+Example:
+
+```bash
+git show 87f42dd
+```
+
+---
+
+## `git diff`
+
+Displays differences between the working tree and the relevant Git state.
+
+```bash
+git diff
+```
+
+---
+
+# `.gitignore`
+
+`.gitignore` is used to specify files and directories that Git should ignore.
+
+Create a `.gitignore` file:
+
+```bash
+vi .gitignore
+```
+
+Example:
+
+```gitignore
+*.war
+*.jar
+target/
+project.docx
+```
+
+### Example Java Web Application
+
+```text
+Java_Web_App/
+├── src/
+│   └── *.java
+├── resources/
+│   ├── *.html
+│   └── *.js
+├── target/
+│   ├── *.jar
+│   └── *.war
+├── DB_Credential/
+│   ├── uid.json
+│   └── pwd.json
+└── DB_Secret/
+    └── db_cred.json
+```
+
+Sensitive credentials and generated build artifacts should generally not be committed.
+
+As a good practice, create `.gitignore` early in a new repository.
+
+---
+
+# Undo Committed Changes — `git reset`
+
+`git reset` moves the current branch's `HEAD` to another commit.
+
+It does **not** create a new commit to record the undo operation.
+
+Because reset can rewrite branch history, it should be used carefully on shared repositories.
+
+### Syntax
+
+```bash
+git reset <reset_option> <commit_id>
+```
+
+### `--soft`
+
+```bash
+git reset --soft <commit_id>
+```
+
+* Moves `HEAD` to the specified commit
+* Changes remain staged
+* Changes are available in the staging area and working directory
+
+### `--mixed`
+
+```bash
+git reset --mixed <commit_id>
+```
+
+This is the default reset mode.
+
+* Moves `HEAD`
+* Changes are removed from the staging area
+* Changes remain in the working directory
+
+### `--hard`
+
+```bash
+git reset --hard <commit_id>
+```
+
+* Moves `HEAD`
+* Resets the staging area
+* Resets the working directory
+
+> `--hard` can permanently discard uncommitted changes. Use it carefully.
+
+### Example
+
+```text
+master:
+
+c5  ← HEAD
+c4
+c3
+c2
+c1
+```
+
+Soft reset:
+
+```bash
+git reset --soft c4
+```
+
+Result:
+
+```text
+c4  ← HEAD
+c3
+c2
+c1
+```
+
+Hard reset:
+
+```bash
+git reset --hard c1
+```
+
+Result:
+
+```text
+c1  ← HEAD
+```
+
+---
+
+# Day 12 — 18th June 2026
+
+## Git Revert
+
+`git revert` creates a **new commit** that reverses the changes introduced by an earlier commit.
+
+Unlike `git reset`, it preserves the existing commit history.
+
+```bash
+git revert <commit_id>
+```
+
+### Reset vs Revert
+
+| Feature                      | `git reset`    | `git revert` |
+| ---------------------------- | -------------- | ------------ |
+| Moves `HEAD`                 | Yes            | No           |
+| Creates new commit           | No             | Yes          |
+| Preserves existing history   | Can rewrite it | Yes          |
+| Suitable for shared branches | Usually avoid  | Recommended  |
+
+---
+
+# Git Branching Techniques
+
+A Git branch is an independent line of development.
+
+Branches allow developers to work on features without directly affecting the main production branch.
+
+```text
+master/main:
+cm1 → cm2 → cm3 → cm4
+
+feature:
+cm1 → cm2 → cm3 → f1cm1 → f1cm2 → f1cm3
+```
+
+After development is complete, the feature branch can be merged into the target branch.
+
+---
+
+## Branching Strategies
+
+### Scenario 1 — Single Developer, One Feature
+
+```text
+master:
+rel1 → rel2 → rel3
+
+feature_branch1:
+rel1 → rel2 → rel3 → f1cm1 → f1cm2 → f1cm3
+```
+
+Merge:
+
+```bash
+git switch master
+git merge feature_branch1
+```
+
+---
+
+### Scenario 2 — Single Developer, Multiple Features
+
+```text
+master:
+rel1 → rel2 → rel3
+
+feature_branch1:
+rel1 → rel2 → rel3 → f1cm1 → f1cm2 → f1cm3
+
+feature_branch2:
+rel1 → rel2 → rel3 → f2cm1 → f2cm2 → f2cm3
+```
+
+---
+
+### Scenario 3 — Multiple Developers
+
+A common structure can include:
+
+```text
+master
+   |
+   └── integration
+          |
+          ├── developer1
+          │      ├── feature1
+          │      └── feature2
+          |
+          └── developer2
+                 ├── feature1
+                 └── feature2
+```
+
+Developers work independently and changes are integrated through the appropriate integration branch.
+
+---
+
+### Scenario 4 — Multiple Teams
+
+A larger organization may use a hierarchy such as:
+
+```text
+master
+   |
+   └── release
+          |
+          ├── integration-team1
+          │      ├── developer1
+          │      └── developer2
+          |
+          └── integration-team2
+                 ├── developer1
+                 └── developer2
+```
+
+The exact branching strategy should be based on the organization's development and release process.
+
+---
+
+# Working With Git Branches
+
+List branches:
+
+```bash
+git branch
+```
+
+Create a branch:
+
+```bash
+git branch <new_branch_name>
+```
+
+Create a branch and switch to it:
+
+```bash
+git switch -c <new_branch_name>
+```
+
+Switch to an existing branch:
+
+```bash
+git switch <existing_branch_name>
+```
+
+---
+
+# Git Merge
+
+Example:
+
+```text
+master:
+cm1
+
+feature1:
+cm1 → f1cm1
+```
+
+Merge the feature branch:
+
+```bash
+git switch master
+git merge feature1
+```
+
+The merge command should be executed from the **target branch**.
+
+---
+
+# Merge Conflicts
+
+A merge conflict can occur when different branches make incompatible changes to the same part of a file.
+
+### How to Handle a Merge Conflict
+
+1. Identify the conflicting file(s).
+2. Open the file and review the changes.
+3. Decide which changes should be retained.
+4. Remove the conflict markers and unwanted changes.
+5. Save the corrected file.
+6. Stage the file.
+7. Commit the resolution.
+
+```bash
+git add <conflicted_file>
+git commit -m "Resolved merge conflict"
+```
+
+### DevOps Perspective
+
+> The best approach is not only to fix merge conflicts, but to prevent unnecessary conflicts through good branching, communication, and frequent synchronization.
+
+---
+
+# Day 13 — 19th June 2026
+
+## Git Rebase
+
+`git rebase` moves or reapplies commits onto a new base commit.
+
+It is commonly used to maintain a cleaner, more linear history.
+
+Example:
+
+```text
+master:
+cm1 → cm2 → f1cm1 → f1cm2 → f1cm3
+```
+
+Suppose `feature2` was created from `cm2`:
+
+```text
+feature2:
+cm1 → cm2 → f2cm1 → f2cm2 → f2cm3
+```
+
+Rebase feature2:
+
+```bash
+git switch feature2
+git rebase master
+```
+
+Conceptually:
+
+```text
+cm1 → cm2 → f1cm1 → f1cm2 → f1cm3 → f2cm1 → f2cm2 → f2cm3
+```
+
+Then:
+
+```bash
+git switch master
+git merge feature2
+```
+
+> Rebase rewrites commit history. Avoid rebasing commits that have already been shared if doing so would disrupt other developers.
+
+---
+
+# Git Squash
+
+Squashing combines multiple commits into a smaller number of commits, often one logical commit.
+
+Example:
+
+```text
+feature1:
+
+cm1 → cm2 → f1cm1 → f1cm2 → f1cm3 → f1cm4 → f1cm5
+```
+
+From the target branch:
+
+```bash
+git switch master
+git merge --squash feature1
+git commit -m "Combined changes from feature1"
+```
+
+The feature changes are combined into a single new commit on the target branch.
+
+---
+
+# Git Stash
+
+`git stash` temporarily stores uncommitted changes so that the working directory can be cleaned for another task.
+
+Check status:
+
+```bash
+git status
+```
+
+Create changes:
+
+```bash
+echo "rec1" >> file1.txt
+git add .
+```
+
+Stash changes:
+
+```bash
+git stash push -m "Valid message"
+```
+
+List stashes:
+
+```bash
+git stash list
+```
+
+Apply the latest stash:
+
+```bash
+git stash apply
+```
+
+Apply a specific stash:
+
+```bash
+git stash apply stash@{5}
+```
+
+Drop the latest stash:
+
+```bash
+git stash drop
+```
+
+Drop a specific stash:
+
+```bash
+git stash drop stash@{5}
+```
+
+Apply and remove the latest stash:
+
+```bash
+git stash pop
+```
+
+Apply and remove a specific stash:
+
+```bash
+git stash pop stash@{5}
+```
+
+Delete all stashes:
+
+```bash
+git stash clear
+```
+
+---
+
+# Working With Remote Repositories — GitHub
+
+## Remote Repository Workflow
+
+```text
+Developer
+    |
+    | git clone
+    ↓
+Local Repository
+    |
+    | git add
+    ↓
+Staging Area
+    |
+    | git commit
+    ↓
+Local Repository
+    |
+    | git push
+    ↓
+GitHub Remote Repository
+```
+
+Typical GitHub workflow:
+
+1. Create a remote GitHub repository.
+2. Clone the repository.
+3. Create a feature branch.
+4. Develop and commit changes.
+5. Push the feature branch.
+6. Create a Pull Request.
+7. Reviewer reviews the changes.
+8. Merge the Pull Request.
+
+---
+
+## `git clone`
+
+Clone a remote repository:
+
+```bash
+git clone <remote_repository_url>
+```
+
+Example:
+
+```bash
+git clone https://github.com/Praveen1058/TestRemoteRepo1.git
+```
+
+---
+
+## `git remote -v`
+
+Displays the remote repositories linked to the local repository.
+
+```bash
+git remote -v
+```
+
+---
+
+## Add a Remote
+
+```bash
+git remote add origin <remote_repository_url>
+```
+
+Example:
+
+```bash
+git remote add origin https://github.com/praveen1058/TestRemoteRepo1.git
+```
+
+---
+
+## Remove a Remote
+
+```bash
+git remote remove origin
+```
+
+---
+
+## Push a Feature Branch
+
+```bash
+git push -u origin localfeature1
+```
+
+The `-u` option sets the upstream relationship between the local branch and the remote branch.
+
+---
+
+# GitHub Pull Request Workflow
+
+```text
+Developer
+   |
+   ↓
+Feature Branch
+   |
+   ↓
+Commit Changes
+   |
+   ↓
+Push Feature Branch
+   |
+   ↓
+Create Pull Request
+   |
+   ↓
+Code Review
+   |
+   ↓
+Approval
+   |
+   ↓
+Merge
+   |
+   ↓
+Main/Master
+```
+
+---
+
+# Git Command Quick Reference
+
+| Command             | Purpose                                      |
+| ------------------- | -------------------------------------------- |
+| `git init`          | Initialize a repository                      |
+| `git clone`         | Clone a remote repository                    |
+| `git status`        | Show working-tree status                     |
+| `git add`           | Stage changes                                |
+| `git commit`        | Create a commit                              |
+| `git push`          | Push commits to remote                       |
+| `git fetch`         | Download remote-tracking information         |
+| `git pull`          | Fetch and integrate remote changes           |
+| `git log`           | View commit history                          |
+| `git show`          | View commit details                          |
+| `git diff`          | View changes                                 |
+| `git ls-files`      | List tracked files                           |
+| `git branch`        | List/create branches                         |
+| `git switch`        | Switch branches                              |
+| `git merge`         | Merge branches                               |
+| `git rebase`        | Reapply commits on a new base                |
+| `git reset`         | Move branch pointer / undo changes           |
+| `git revert`        | Create a commit that reverses another commit |
+| `git stash`         | Temporarily store uncommitted changes        |
+| `git remote -v`     | View configured remotes                      |
+| `git remote add`    | Add a remote                                 |
+| `git remote remove` | Remove a remote                              |
+
+---
+
+# Git Practice Commands
+
+## Repository Setup
+
+```bash
+mkdir praveencloud
+cd praveencloud
+
+mkdir samplerepo1
+cd samplerepo1
+
+git init
+```
+
+## Create and Commit Files
+
+```bash
+echo "rec1" >> file1.txt
+git status
+
+git add file1.txt
+git status
+
+git commit -m "Created file1.txt"
+
+git log
+git ls-files
+```
+
+## Create Another File
+
+```bash
+echo "rec1" >> file2.txt
+
+git status
+git add file2.txt
+git commit -m "Created file2.txt"
+```
+
+## Modify a File
+
+```bash
+echo "rec2" >> file1.txt
+
+git diff
+git add file1.txt
+git commit -m "Updated file1.txt"
+```
+
+## View History
+
+```bash
+git log
+git log --oneline
+git log --oneline -5
+git log --oneline -- m2.txt
+git show <commit_id>
+```
+
+---
+
+# Branching Practice
+
+```bash
+mkdir demorepo2
+cd demorepo2
+
+git init
+
+echo "rec1" >> f1.txt
+git add .
+git commit -m "cm1"
+
+git branch feature1
+git branch feature2
+
+git switch -c feature3
+
+git branch
+```
+
+Switch branches:
+
+```bash
+git switch master
+git switch feature1
+git switch feature2
+```
+
+Create a feature change:
+
+```bash
+echo "rec1" >> s1.txt
+git add .
+git commit -m "f1cm1"
+```
+
+Merge:
+
+```bash
+git switch master
+git merge feature1
+```
+
+---
+
+# Merge Conflict Practice
+
+Create two branches:
+
+```bash
+git branch feature1
+git branch feature2
+```
+
+Work on feature1:
+
+```bash
+git switch feature1
+
+echo "Record2 from feature1" >> f1.txt
+
+git add .
+git commit -m "f1cm1"
+```
+
+Merge feature1:
+
+```bash
+git switch master
+git merge feature1
+```
+
+Work on feature2:
+
+```bash
+git switch feature2
+
+echo "Record2 from feature2" >> f1.txt
+
+git add .
+git commit -m "f2cm1"
+```
+
+Merge feature2:
+
+```bash
+git switch master
+git merge feature2
+```
+
+If a conflict occurs:
+
+```bash
+git status
+```
+
+Edit the conflicting file, resolve the conflict, then:
+
+```bash
+git add .
+git commit -m "Resolved merge conflict"
+```
+
+---
+
+# Rebase Practice
+
+```bash
+git switch feature1
+git rebase master
+
+git switch master
+git merge feature1
+```
+
+---
+
+# Squash Practice
+
+```bash
+git switch master
+
+git merge --squash feature1
+
+git status
+
+git commit -m "Combined changes from feature1"
+```
+
+---
+
+# Stash Practice
+
+```bash
+git switch -c feature3
+
+echo "rec1" >> n1.txt
+git add .
+
+git stash push -m "Changes for n1.txt"
+
+git stash list
+
+git stash apply
+```
+
+Specific stash:
+
+```bash
+git stash apply stash@{2}
+```
+
+Remove a stash:
+
+```bash
+git stash drop stash@{2}
+```
+
+Apply and remove:
+
+```bash
+git stash pop
+```
+
+Clear all:
+
+```bash
+git stash clear
+```
+
+---
+
+# Remote Repository Practice
+
+Clone:
+
+```bash
+mkdir remoterepos
+cd remoterepos
+
+git clone https://github.com/praveen1058/TestRemoteRepo1.git
+
+cd TestRemoteRepo1
+```
+
+Check repository:
+
+```bash
+git status
+git remote -v
+git log --oneline
+```
+
+Create a local feature branch:
+
+```bash
+git switch -c localfeature1
+```
+
+Create and commit a file:
+
+```bash
+echo "rec1" >> localfile1.txt
+
+git add .
+git commit -m "localf1cm1"
+```
+
+Push the branch:
+
+```bash
+git push -u origin localfeature1
+```
+
+Update the local repository:
+
+```bash
+git fetch
+git status
+
+git pull
+```
+
+Remove the remote:
+
+```bash
+git remote remove origin
+```
+
+Add it again:
+
+```bash
+git remote add origin https://github.com/praveen1058/TestRemoteRepo1.git
+```
+
+Add another remote:
+
+```bash
+git remote add origin1 https://github.com/praveen1058/TestRemoteRepo1.git
+```
+
+Verify:
+
+```bash
+git remote -v
+```
+
+---
+
+# Important Git Concepts
+
+```text
+Working Directory
+        |
+        | git add
+        ↓
+Staging Area
+        |
+        | git commit
+        ↓
+Local Repository
+        |
+        | git push
+        ↓
+Remote Repository
+```
+
+### Undo Operations
+
+```text
+Uncommitted Changes
+        |
+        └── git restore / git rm / git stash
+
+Staged Changes
+        |
+        └── git restore --staged
+
+Committed Changes
+        |
+        ├── git reset
+        └── git revert
+```
+
+### Collaboration
+
+```text
+Remote Repository
+       ↓
+    git clone
+       ↓
+Local Repository
+       ↓
+Create Feature Branch
+       ↓
+Develop
+       ↓
+git add
+       ↓
+git commit
+       ↓
+git push
+       ↓
+Pull Request
+       ↓
+Code Review
+       ↓
+Merge
+```
+
+---
+
+## Next Topics
+
+* Git Rebase
+* Git Squash
+* Git Stash
+* Remote Repositories
+* GitHub Pull Requests
+* Git Branching Strategies
+* Git Merge Conflicts
+* Git Collaboration Workflow
