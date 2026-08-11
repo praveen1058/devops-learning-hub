@@ -1,0 +1,632 @@
+# Infrastructure as Code (IaC) — Terraform
+
+## Infrastructure Provisioning
+
+**Infrastructure as Code (IaC)** is the practice of creating and managing infrastructure using code instead of manually creating resources through a cloud console.
+
+### Common IaC Tools
+
+* **Terraform** — Supports multiple cloud and infrastructure platforms
+* **AWS CloudFormation** — AWS
+* **Azure Resource Manager (ARM)** — Azure
+
+### Infrastructure Provisioning
+
+Infrastructure provisioning is the process of dynamically creating infrastructure resources such as:
+
+* Virtual Machines
+* VPCs / Networks
+* Subnets
+* Security Groups
+* Load Balancers
+* Databases
+* Storage
+
+---
+
+# Terraform
+
+Terraform is an **Infrastructure as Code tool** used to provision and manage infrastructure.
+
+Terraform uses **HCL (HashiCorp Configuration Language)** to define infrastructure in a declarative manner.
+
+Terraform can be used to:
+
+```text
+Create Resources      +
+Update Resources      ~
+Delete Resources      -
+```
+
+For example:
+
+```text
+20 VMs
+   |
+   | Change configuration
+   v
+t2.medium
+   |
+   v
+t3.large
+```
+
+Terraform can identify the required infrastructure changes and apply them.
+
+---
+
+# Terraform Terminologies
+
+## Terraform Registry
+
+The **Terraform Registry** provides Terraform providers, modules, and documentation.
+
+[Terraform Registry](https://registry.terraform.io/?utm_source=chatgpt.com)
+
+AWS Provider documentation:
+
+[Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs?utm_source=chatgpt.com)
+
+### Terraform Provider
+
+A provider allows Terraform to communicate with an infrastructure platform or service.
+
+Examples:
+
+```text
+Terraform
+   |
+   +-- AWS Provider
+   |
+   +-- Azure Provider
+   |
+   +-- Google Cloud Provider
+```
+
+The provider contains the resources and functionality required to manage the target platform.
+
+---
+
+# Terraform Working Model
+
+The typical Terraform workflow is:
+
+```text
+Identify Infrastructure Scope
+            |
+            v
+      Write Terraform Code
+            |
+            v
+       terraform init
+            |
+            v
+       terraform plan
+            |
+            v
+      terraform apply
+            |
+            v
+    Infrastructure Created
+```
+
+## Step 1 — Identify the Scope
+
+Determine which platform and infrastructure resources are required.
+
+Examples:
+
+```text
+AWS
+Azure
+GCP
+```
+
+---
+
+## Step 2 — Write Terraform Code
+
+Terraform configuration files normally use the `.tf` extension.
+
+Example:
+
+```text
+main.tf
+variables.tf
+outputs.tf
+providers.tf
+```
+
+---
+
+## Step 3 — Terraform Init
+
+```bash
+terraform init
+```
+
+`terraform init` initializes the Terraform working directory and downloads the required providers.
+
+---
+
+## Step 4 — Terraform Plan
+
+```bash
+terraform plan
+```
+
+`terraform plan` creates a preview of the changes Terraform intends to make.
+
+It helps validate the configuration before making changes to the infrastructure.
+
+---
+
+## Step 5 — Terraform Apply
+
+```bash
+terraform apply
+```
+
+`terraform apply` implements the planned infrastructure changes.
+
+---
+
+# Terraform Installation
+
+Terraform can be installed on Windows or Linux.
+
+Official Terraform installation documentation:
+
+[Terraform Installation](https://developer.hashicorp.com/terraform/install?utm_source=chatgpt.com)
+
+Terraform tutorials:
+
+[Terraform AWS Get Started Tutorial](https://developer.hashicorp.com/terraform/tutorials/aws-get-started?utm_source=chatgpt.com)
+
+---
+
+# Installing Terraform on Windows
+
+Using the manual installation approach:
+
+1. Download the Windows AMD64 Terraform ZIP file.
+2. Extract the ZIP file.
+3. Locate the Terraform executable.
+4. Add the Terraform directory to the Windows `PATH`.
+5. Open a new Command Prompt or PowerShell window.
+6. Verify the installation.
+
+Example directory:
+
+```text
+C:\Softwares\terraform_1.7.2_windows_amd64
+```
+
+Verify:
+
+```bash
+terraform version
+```
+
+---
+
+# Visual Studio Code
+
+Visual Studio Code can be used as the IDE for creating Terraform projects.
+
+[Visual Studio Code Downloads](https://code.visualstudio.com/download?utm_source=chatgpt.com)
+
+After installing VS Code:
+
+1. Open Visual Studio Code.
+2. Open the Terraform project.
+3. Open the Extensions section.
+4. Search for **HashiCorp Terraform**.
+5. Install the Terraform extension.
+
+---
+
+# AWS Authentication
+
+Terraform needs credentials to communicate with AWS.
+
+AWS authentication can be performed through mechanisms such as:
+
+* AWS CLI configuration
+* Environment variables
+* IAM roles
+* Shared AWS credentials/configuration
+* Other supported AWS authentication mechanisms
+
+AWS Console login generally uses:
+
+```text
+Email / Username
+        +
+Password
+```
+
+Programmatic access uses AWS credentials.
+
+> **Security:** Do not hardcode real AWS access keys or secret keys inside Terraform source files or commit them to Git repositories.
+
+---
+
+# Terraform Project
+
+A basic Terraform project can contain:
+
+```text
+terraform-project/
+│
+├── main.tf
+├── variables.tf
+├── outputs.tf
+└── providers.tf
+```
+
+For a simple example, everything can initially be placed in `main.tf`.
+
+---
+
+# Terraform AWS Provider
+
+Example provider configuration:
+
+```hcl
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 6.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "ap-south-1"
+}
+```
+
+AWS credentials should preferably be supplied through a secure authentication mechanism rather than hardcoded in the Terraform file.
+
+---
+
+# Creating an EC2 Instance
+
+Example Terraform configuration:
+
+```hcl
+resource "aws_instance" "instance1" {
+  ami           = "ami-xxxxxxxxxxxxxxxxx"
+  instance_type = "t2.micro"
+  key_name      = "AWS_MLOps_KeyPair"
+
+  tags = {
+    Name = "TESTSERVER"
+  }
+}
+```
+
+### Important
+
+The AMI ID is region-specific. Therefore, use an AMI ID that actually exists in the selected AWS region.
+
+---
+
+# Basic Terraform Commands
+
+Initialize the project:
+
+```bash
+terraform init
+```
+
+Validate the configuration:
+
+```bash
+terraform validate
+```
+
+Create an execution plan:
+
+```bash
+terraform plan
+```
+
+Create/update infrastructure:
+
+```bash
+terraform apply
+```
+
+Destroy Terraform-managed infrastructure:
+
+```bash
+terraform destroy
+```
+
+---
+
+# Terraform Infrastructure Example
+
+The following example demonstrates how Terraform can create a basic AWS network consisting of:
+
+```text
+VPC
+ |
+ +-- Subnet
+ |
+ +-- Internet Gateway
+ |
+ +-- Route Table
+ |
+ +-- Route Table Association
+ |
+ +-- Security Group
+ |
+ +-- EC2 Instance
+```
+
+---
+
+# Create VPC
+
+```hcl
+resource "aws_vpc" "myvpc" {
+  cidr_block       = "10.0.0.0/16"
+  instance_tenancy = "default"
+
+  tags = {
+    Name = "myvpc"
+  }
+}
+```
+
+---
+
+# Create Subnet
+
+```hcl
+resource "aws_subnet" "mysubnet" {
+  vpc_id     = aws_vpc.myvpc.id
+  cidr_block = "10.0.1.0/24"
+
+  tags = {
+    Name = "mysubnet"
+  }
+}
+```
+
+The following reference:
+
+```hcl
+aws_vpc.myvpc.id
+```
+
+uses the ID of the VPC created by Terraform.
+
+---
+
+# Create Internet Gateway
+
+```hcl
+resource "aws_internet_gateway" "mygw" {
+  vpc_id = aws_vpc.myvpc.id
+
+  tags = {
+    Name = "mygw"
+  }
+}
+```
+
+---
+
+# Create Route Table
+
+```hcl
+resource "aws_route_table" "myrt" {
+  vpc_id = aws_vpc.myvpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.mygw.id
+  }
+
+  tags = {
+    Name = "myrt"
+  }
+}
+```
+
+The route:
+
+```text
+0.0.0.0/0
+```
+
+represents the default IPv4 route.
+
+---
+
+# Route Table Association
+
+```hcl
+resource "aws_route_table_association" "myrta" {
+  subnet_id      = aws_subnet.mysubnet.id
+  route_table_id = aws_route_table.myrt.id
+}
+```
+
+This associates the subnet with the route table.
+
+---
+
+# Security Group
+
+```hcl
+resource "aws_security_group" "mysg" {
+  name        = "mysg"
+  description = "Allow inbound traffic"
+  vpc_id      = aws_vpc.myvpc.id
+
+  ingress {
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "mysg"
+  }
+}
+```
+
+> **Security note:** Allowing SSH from `0.0.0.0/0` exposes port 22 to the entire internet. In a real environment, restrict SSH access to a trusted IP range, VPN, bastion host, or other controlled access path.
+
+---
+
+# Create EC2 Instance
+
+```hcl
+resource "aws_instance" "instance" {
+  ami                         = "ami-xxxxxxxxxxxxxxxxx"
+  instance_type               = "t2.micro"
+  associate_public_ip_address = true
+
+  subnet_id = aws_subnet.mysubnet.id
+
+  vpc_security_group_ids = [
+    aws_security_group.mysg.id
+  ]
+
+  key_name = "AWS_MLOps_KeyPair"
+
+  tags = {
+    Name = "Dummy_Server"
+  }
+}
+```
+
+The EC2 instance is connected to the previously created:
+
+* Subnet
+* Security Group
+* VPC networking infrastructure
+
+---
+
+# Complete Terraform Workflow
+
+After creating the Terraform configuration:
+
+```bash
+terraform init
+```
+
+Initialize the Terraform project and download the required provider.
+
+Then:
+
+```bash
+terraform validate
+```
+
+Validate the Terraform configuration.
+
+Then:
+
+```bash
+terraform plan
+```
+
+Preview the infrastructure changes.
+
+Then:
+
+```bash
+terraform apply
+```
+
+Create the infrastructure.
+
+When the infrastructure is no longer required:
+
+```bash
+terraform destroy
+```
+
+Remove the Terraform-managed infrastructure.
+
+---
+
+# Terraform Resource Lifecycle
+
+Terraform manages infrastructure through a desired-state model.
+
+```text
+Terraform Configuration
+          |
+          v
+    Desired State
+          |
+          v
+    Terraform Plan
+          |
+          v
+ Compare with Current State
+          |
+          v
+    Required Changes
+          |
+          v
+    Terraform Apply
+          |
+          v
+ Target Infrastructure
+```
+
+Terraform can determine whether resources need to be:
+
+```text
++ Create
+~ Update
+- Destroy
+```
+
+---
+
+# Key Terraform Concepts
+
+| Concept              | Purpose                                            |
+| -------------------- | -------------------------------------------------- |
+| IaC                  | Manage infrastructure using code                   |
+| Terraform            | IaC tool for provisioning/managing infrastructure  |
+| HCL                  | Language commonly used for Terraform configuration |
+| Provider             | Connects Terraform to a platform/service           |
+| Resource             | Infrastructure object managed by Terraform         |
+| Registry             | Source for providers and modules                   |
+| `terraform init`     | Initializes the Terraform project                  |
+| `terraform validate` | Validates configuration syntax/structure           |
+| `terraform plan`     | Previews infrastructure changes                    |
+| `terraform apply`    | Applies infrastructure changes                     |
+| `terraform destroy`  | Destroys managed infrastructure                    |
+| `.tf`                | Terraform configuration file extension             |
