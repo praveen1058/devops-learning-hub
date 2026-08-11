@@ -1,0 +1,303 @@
+# Python Fundamentals
+
+## Overview of Python
+
+Python can be used to develop different types of applications:
+
+* **Console Applications**
+* **Web Applications**
+* **Automation Scripts**
+* **DevOps / MLOps Applications**
+
+### Python Web Application Frameworks
+
+* **Flask** — Lightweight and powerful Python web application framework.
+* **Django** — Full-featured web application framework for Python.
+* **Streamlit** — Used to quickly create web applications for APIs, AI/ML models, dashboards, and chatbots.
+
+---
+
+# Python Fundamentals — Topics
+
+* Overview of Python
+* Features, Benefits, and Uses of Python
+* Installation and Setup of Python Environment
+* Python Sequences
+* File Operations
+* Python Functions
+* OOPs Concepts
+* Modules
+* Errors and Exception Handling
+* Python Console Applications
+* Python Web Applications using Flask
+
+---
+
+# Python Installation and Development Environment
+
+Install Python from the official Python website.
+
+[Python Downloads](https://www.python.org/downloads/?utm_source=chatgpt.com)
+
+### IDE
+
+* Visual Studio Code
+
+### Verify Python Installation
+
+```bash
+python --version
+```
+
+or:
+
+```bash
+python3 --version
+```
+
+---
+
+# Python Scripts
+
+Python scripts are `.py` files containing Python code.
+
+Example:
+
+```python
+print("Hello World")
+```
+
+Run the script:
+
+```bash
+python sample.py
+```
+
+---
+
+# Python Web Applications
+
+A web application allows users to interact with an application through a web browser.
+
+Python provides several web application frameworks:
+
+```text
+Python
+   |
+   +-- Flask
+   |
+   +-- Django
+   |
+   +-- Streamlit
+```
+
+---
+
+# Flask Web Application Framework
+
+**Flask** is a lightweight Python web application framework.
+
+It can be used to create web applications and REST APIs.
+
+## Create a Flask Project
+
+Create a project folder:
+
+```text
+My-WebApp-Project/
+│
+├── app.py
+│
+└── templates/
+    └── sample.html
+```
+
+The `templates` directory is used to store HTML templates.
+
+---
+
+# Install Flask
+
+Open a terminal inside the project directory:
+
+```bash
+pip install flask
+```
+
+Verify Flask installation:
+
+```bash
+pip show flask
+```
+
+---
+
+# Create `app.py`
+
+```python
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+
+@app.route("/")
+def sample():
+    return render_template("sample.html")
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
+```
+
+### Explanation
+
+```python
+from flask import Flask, render_template
+```
+
+Imports Flask and the `render_template` function.
+
+```python
+app = Flask(__name__)
+```
+
+Creates the Flask application.
+
+```python
+@app.route("/")
+```
+
+Defines the URL route for the application's home page.
+
+```python
+def sample():
+```
+
+Defines the Python function that handles the request.
+
+```python
+return render_template("sample.html")
+```
+
+Loads and displays `sample.html` from the `templates` directory.
+
+```python
+app.run(debug=True)
+```
+
+Starts the Flask development server with debug mode enabled.
+
+---
+
+# Create `templates/sample.html`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Python Flask Web Application</title>
+
+    <link
+        rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+</head>
+
+<body>
+
+<div class="jumbotron" style="background-color: white">
+
+    <img
+        src="https://octodex.github.com/images/spidertocat.png"
+        alt="Spidertocat"
+        class="img-responsive center-block"
+        style="width: 250px">
+
+    <h2 class="text-center">Hello Team</h2>
+
+    <p class="text-center">
+        Python Flask Web App Demo.
+    </p>
+
+</div>
+
+</body>
+</html>
+```
+
+---
+
+# Run the Flask Application
+
+From the project directory:
+
+```bash
+python -m flask run
+```
+
+The Flask development server runs on:
+
+```text
+http://127.0.0.1:5000
+```
+
+### Default Flask Port
+
+```text
+5000
+```
+
+Therefore:
+
+```text
+Application
+    |
+    v
+Flask
+    |
+    v
+127.0.0.1:5000
+    |
+    v
+Web Browser
+```
+
+---
+
+# Flask Project Flow
+
+```text
+Create Project
+      |
+      v
+Create app.py
+      |
+      v
+Install Flask
+      |
+      v
+Create templates directory
+      |
+      v
+Create HTML template
+      |
+      v
+Define Flask Route
+      |
+      v
+Run Flask Application
+      |
+      v
+http://127.0.0.1:5000
+```
+
+# Key Points
+
+* Python is used for application development, scripting, automation, DevOps, and MLOps.
+* Flask is a lightweight Python web framework.
+* Django is a full-featured Python web framework.
+* Streamlit is useful for quickly building data, AI/ML, and API-based web applications.
+* Flask uses **routes** to map URLs to Python functions.
+* HTML templates are commonly stored inside the `templates` directory.
+* `render_template()` is used to render an HTML template.
+* Flask's default development server uses port **5000**.
