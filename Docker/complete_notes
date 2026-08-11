@@ -1,0 +1,634 @@
+# Containerization Using Docker
+
+## What is Containerization?
+
+* Containerization is the process of packaging an application along with its dependencies.
+* DevOps commonly uses a **Microservice-Based Application Architecture**.
+
+---
+
+# Virtual Machines
+
+* VMs are called **Hardware-Level Virtualization**.
+* VMs are created using a **Hypervisor**.
+* VMs are used to execute Operating Systems.
+* VMs continue to execute even if there is no active application/task.
+* VMs consume more space and take more time to start applications/tasks.
+
+# Containers
+
+* Containers are called **OS-Level Virtualization**.
+* Containers are created using a **Container Engine**.
+* Containers are used to execute applications/tasks, not Operating Systems.
+* Containers exit when there is no active application/task.
+* Containers consume less space and start applications/tasks faster.
+* Containers can reduce the number of VMs, but cannot completely eliminate VMs.
+
+### Namespace and Control Groups
+
+* Namespace and Control Groups are important Linux kernel features.
+* They allow containers to execute in isolated and dedicated environments.
+* Docker Engine is used to create and execute Docker containers.
+
+---
+
+# Docker Terminologies
+
+### Containerization
+
+Process of packaging applications along with their dependencies.
+
+### Container Engine
+
+Used to create and manage containers and container images.
+
+### Container Image
+
+* A static file that defines the properties and dependencies of an application/container.
+* It is non-executable.
+* It is composed of multiple layers created using Dockerfile instructions.
+
+### Container
+
+An executable instance created from a container image.
+
+### Container Registry
+
+Used to store and manage different versions of container images.
+
+Example:
+
+* Docker Hub — https://hub.docker.com/
+
+### Container Repository
+
+A subset of a container registry used to organize and store container images.
+
+---
+
+# CI Flow with Container Images
+
+```text
+GitHub Repository              Artifactory/JFrog              DockerHub
+Source Code                    Application Artifact           Container Image
+
+web_app.java_v1.0   --> Build --> web_app.war_v1.0 --> web_app_image:v1.0
+
+web_app.java_v1.1   --> Build --> web_app.war_v1.1 --> web_app_image:v1.1
+```
+
+---
+
+# Infrastructure Perspective
+
+Without containers:
+
+```text
+Jenkins Master (VM)
+        |
+        +-- Jenkins Slave Node 1 (VM) --> Java Builds
+        +-- Jenkins Slave Node 2 (VM) --> .NET Builds
+        +-- Jenkins Slave Node 3 (VM) --> Python Builds
+        +-- Jenkins Slave Node 4 (VM) --> Angular/NodeJS Builds
+        +-- Jenkins Slave Node 5 (VM) --> Ruby Builds
+```
+
+Using containers:
+
+```text
+Jenkins Master (VM)
+        |
+        +-- Jenkins Slave Node 1 (VM)
+                |
+                +-- Container C1 --> Java Builds
+                +-- Container C2 --> .NET Builds
+                +-- Container C3 --> Python Builds
+                +-- Container C4 --> Angular/NodeJS Builds
+                +-- Container C5 --> Ruby Builds
+```
+
+---
+
+# Developers and Deployment Perspective
+
+## Developer / Build
+
+1. Create source code.
+2. Build the application.
+3. Deploy application artifacts to the target server.
+
+Example:
+
+```text
+web_app.war_v1.0
+Dependencies:
+    JDK 17
+    Tomcat 8.5
+```
+
+### Containerization
+
+Create an application image containing the application and its dependencies:
+
+```text
+web_app_image:v1.0
+    |
+    +-- web_app.war_v1.0
+    +-- JDK 17
+    +-- Tomcat 8.5
+```
+
+Publish the image to a container registry such as Docker Hub.
+
+## QA / UAT / Production
+
+Each environment can:
+
+1. Install the Container Engine.
+2. Download the application image from the Container Registry.
+3. Create the application container.
+4. Execute the container.
+
+---
+
+# Docker Installation
+
+Official Docker documentation:
+
+https://docs.docker.com/engine/install/ubuntu/
+
+```bash
+sudo -i
+apt install docker.io -y
+```
+
+---
+
+# Docker CLI Commands
+
+Docker CLI is used to interact with Docker Engine and manage Docker images and containers.
+
+```bash
+docker --version
+docker images
+docker ps
+docker ps -a
+```
+
+### docker images
+
+Lists container images available on the local machine.
+
+### docker ps
+
+Lists active/running containers.
+
+### docker ps -a
+
+Lists active and inactive containers.
+
+---
+
+# Docker Hub
+
+## docker pull
+
+Downloads an image from a container registry.
+
+```bash
+docker pull <image_name>:<tag>
+```
+
+Examples:
+
+```bash
+docker pull ubuntu
+docker pull ubuntu:latest
+```
+
+If no tag is specified, Docker uses the `latest` tag by default.
+
+---
+
+# docker run
+
+Creates and runs a container from an image.
+
+```bash
+docker run <image_name>
+```
+
+## Modes of Container Execution
+
+### Foreground / Attached Mode
+
+Default mode.
+
+```bash
+docker run ubuntu
+docker run ubuntu sleep 20
+```
+
+### Background / Detached Mode
+
+```bash
+docker run -d ubuntu sleep 20
+```
+
+### Interactive Mode
+
+```bash
+docker run -it ubuntu bash
+```
+
+Exit the container:
+
+```bash
+exit
+```
+
+---
+
+# Container Management
+
+## Start a Container
+
+```bash
+docker start <container_id>
+```
+
+Example:
+
+```bash
+docker start 173233fbe3a3
+```
+
+## Login to a Running Container
+
+```bash
+docker exec -it <container_id> bash
+```
+
+Exit:
+
+```bash
+exit
+```
+
+## Stop a Container
+
+```bash
+docker stop <container_id>
+```
+
+## Remove a Container
+
+```bash
+docker rm <container_id>
+```
+
+## Remove an Image
+
+```bash
+docker rmi <image>
+```
+
+## Container Statistics
+
+```bash
+docker stats <container_id>
+```
+
+---
+
+# Port Mapping / Port Binding
+
+Port mapping is used to map a container port to a host port and expose the container service.
+
+```text
+-p <host_port>:<container_port>
+```
+
+Examples:
+
+```bash
+docker run -it -p 8085:8080 tomcat:8.0
+docker run -it -p 8086:8080 tomcat:8.0
+```
+
+The host port must be unique when multiple containers are running on the same host.
+
+---
+
+# Docker Volumes
+
+Docker volumes are used to maintain persistent data.
+
+## 3-Tier Application Example
+
+```text
+Front-End Layer       --> User Interface       --> C1
+Application Layer     --> Business Logic       --> C2
+Backend Layer         --> Database             --> C3
+```
+
+## Volume Commands
+
+List volumes:
+
+```bash
+docker volume ls
+```
+
+Create a volume:
+
+```bash
+docker volume create pl-vol1
+```
+
+Inspect a volume:
+
+```bash
+docker volume inspect pl-vol1
+```
+
+Run a container with a volume:
+
+```bash
+docker run -it --mount source=pl-vol1,destination=/pl-vol1 ubuntu bash
+```
+
+---
+
+# Creating Docker Images
+
+There are two common approaches:
+
+1. `docker commit`
+2. `docker build`
+
+## docker commit
+
+Used to create a container image based on an existing container.
+
+```bash
+docker commit <container_id> <dockerhub_repository>/<image_name>:<tag>
+```
+
+Example:
+
+```bash
+docker commit 173233fbe3a3 loksaieta/pl-mvn-build:v1.0
+```
+
+---
+
+# Publishing Images to Docker Hub
+
+## Docker Login
+
+```bash
+docker login -u <username>
+```
+
+Use a Docker Hub Personal Access Token instead of a password when prompted.
+
+## Docker Push
+
+```bash
+docker push <dockerhub_repository>/<image_name>:<tag>
+```
+
+Examples:
+
+```bash
+docker push loksaieta/pl-mvn-build:v1.0
+docker push loksaieta/pl-mvn-build:v2.0
+```
+
+## Docker Pull
+
+```bash
+docker pull loksaieta/pl-mvn-build:v1.0
+```
+
+---
+
+# Docker Build
+
+`docker build` is used to create a container image from scratch based on instructions defined in a Dockerfile.
+
+Create a Dockerfile:
+
+```bash
+vi Dockerfile
+```
+
+Example:
+
+```dockerfile
+FROM ubuntu
+RUN apt update -y
+RUN apt install maven -y
+```
+
+Build the image:
+
+```bash
+docker build -t loksaieta/pl-java-mvn-build .
+```
+
+`.` refers to the current directory containing the Dockerfile.
+
+---
+
+# Dockerfile Instructions
+
+| Instruction  | Purpose                                                           |
+| ------------ | ----------------------------------------------------------------- |
+| `FROM`       | Defines the base image                                            |
+| `RUN`        | Executes commands while building the image                        |
+| `COPY`       | Copies files from host/build context into the image               |
+| `ADD`        | Copies files and can also retrieve content from URLs              |
+| `ENV`        | Defines environment variables                                     |
+| `ARG`        | Defines build-time arguments                                      |
+| `EXPOSE`     | Documents the container port                                      |
+| `WORKDIR`    | Sets the working directory inside the container                   |
+| `CMD`        | Defines the default startup command; can be overridden at runtime |
+| `ENTRYPOINT` | Defines the primary startup command                               |
+
+---
+
+# Containerizing an Application
+
+Example Dockerfile:
+
+```dockerfile
+FROM tomcat:8.0
+COPY target/*.war /usr/local/tomcat/webapps
+EXPOSE 8080
+```
+
+Docker permission example:
+
+```bash
+usermod -aG docker devopsadmin
+```
+
+---
+
+# Container Orchestration
+
+Common container orchestration tools:
+
+* Docker Compose
+* Docker Swarm
+* Kubernetes
+
+---
+
+# Docker Compose
+
+Docker Compose is used to run multiple containers as a service.
+
+* Docker Compose is an extension/plugin for Docker Engine.
+* It is used to run multiple containers as a service.
+* Docker Compose uses a YAML file to define service configurations.
+* Containers that are part of the same service can be managed together.
+* Containers can be started and stopped together.
+
+Documentation:
+
+https://docs.docker.com/compose/
+
+---
+
+# Installing Docker Compose
+
+```bash
+DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+
+mkdir -p $DOCKER_CONFIG/cli-plugins
+
+curl -SL https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-linux-x86_64 \
+-o $DOCKER_CONFIG/cli-plugins/docker-compose
+
+chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+
+docker compose version
+```
+
+---
+
+# Docker Compose YAML
+
+YAML files are based on key-value pairs.
+
+Example:
+
+```yaml
+services:
+  webserv1:
+    image: "tomcat:8.0"
+    ports:
+      - "8098:8080"
+
+  dbserv1:
+    image: "redis:alpine"
+```
+
+Start the services:
+
+```bash
+docker compose up
+```
+
+Stop and remove the services:
+
+```bash
+docker compose down
+```
+
+---
+
+# Microservice Example with Docker Compose
+
+```text
+User Sign-Up Microservice
+
+Front-End Layer
+    C1.1
+    C1.2
+    C1.3
+
+Application Layer
+    C2.1
+    C2.2
+    C2.3
+
+Backend Layer
+    C3.1
+    C3.2
+    C3.3
+```
+
+Docker Compose can manage multiple containers belonging to the application.
+
+---
+
+# Container Replication
+
+Docker Compose is primarily used for defining and running multi-container applications. For production-scale container replication and orchestration, tools such as Docker Swarm and Kubernetes are used.
+
+---
+
+# Docker Swarm
+
+* Docker Swarm is a container orchestration tool.
+* It is designed for Docker containers.
+* It can create replicas of containers for high availability.
+* It provides orchestration capabilities for Docker-based applications.
+
+Example:
+
+```text
+Application Service
+
+    Replica 1
+    Replica 2
+    Replica 3
+```
+
+---
+
+# Kubernetes
+
+* Kubernetes is an open-source container orchestration platform.
+* It can deploy and manage containerized applications.
+* It provides high availability through replicas of containers/pods.
+* It supports auto-scaling.
+* It supports load balancing.
+* It supports self-healing.
+* It is widely used for deploying microservice-based applications.
+
+---
+
+# Continuous Deployment
+
+Continuous Deployment is the process of releasing application changes to the production environment automatically, without manual intervention or approval.
+
+With appropriate architecture and deployment strategies:
+
+* Application upgrades can be performed with minimal or zero downtime.
+* Microservice architecture can support independent deployment of services.
+* Kubernetes can help implement highly available and resilient deployments.
+
+---
+
+# Managed Kubernetes Services
+
+| Cloud Provider | Kubernetes Service |
+| -------------- | ------------------ |
+| AWS            | EKS                |
+| Azure          | AKS                |
+| GCP            | GKE                |
