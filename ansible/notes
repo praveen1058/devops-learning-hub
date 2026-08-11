@@ -1,0 +1,216 @@
+# Infrastructure as Code (IaC) and Ansible
+
+## 1. Infrastructure as Code (IaC) Tools
+
+### Configuration Management
+
+**Ansible**
+
+### Infrastructure Management
+
+Infrastructure as Code (IaC) tools can be broadly categorized into:
+
+* **Infrastructure Provisioning/Creation**
+
+  * Terraform
+  * AWS CloudFormation
+  * Azure ARM Templates
+
+* **Infrastructure Configuration Management**
+
+  * Ansible
+  * Chef
+  * Puppet
+
+---
+
+# 2. Configuration Management Using Ansible
+
+## Why Ansible?
+
+Ansible is used for automating infrastructure configuration and application deployment across multiple servers.
+
+### Ansible Architecture and Components
+
+* Ansible Controller
+* Ansible Nodes
+* Modules
+* Inventory File
+* `ansible.cfg`
+* SSH
+
+The Ansible Controller connects to the Ansible Nodes using SSH.
+
+---
+
+# 3. Ansible Architecture
+
+```text
+                    Ansible Controller
+                           |
+                           | SSH
+             --------------+--------------
+             |             |             |
+             ↓             ↓             ↓
+        Ansible Node1  Ansible Node2  Ansible Node3
+```
+
+### Ansible Controller
+
+* Central machine used to execute Ansible commands and playbooks.
+* Ansible is installed on the Controller.
+
+### Ansible Nodes
+
+* Target servers on which Ansible performs configuration and deployment tasks.
+* Ansible generally connects to Linux nodes using SSH.
+
+### Modules
+
+* Reusable units of code used by Ansible to perform specific tasks.
+* Examples:
+
+  * Install packages
+  * Start/stop services
+  * Copy files
+  * Create users
+  * Manage files and directories
+
+### Inventory File
+
+The inventory file contains information about the target servers.
+
+It can organize servers into groups:
+
+```text
+Dev_Servers
+    Dev_Server1
+    Dev_Server2
+    Dev_Server3
+    ...
+    
+Test_Servers
+    Test_Server1
+    Test_Server2
+    Test_Server3
+    ...
+```
+
+The inventory can contain details such as:
+
+* Host names/IP addresses
+* User names
+* Connection parameters
+* Target server groups
+
+### `ansible.cfg`
+
+The Ansible configuration file is used to define default Ansible settings and behavior.
+
+---
+
+# 4. Ansible Core Concepts
+
+## Ansible Ad-Hoc Commands
+
+* Used to execute a single task/module at a time.
+* Mainly used for quick or one-time operations.
+* They are not intended to be reused as automation workflows.
+
+Example:
+
+```text
+Install Git
+    ↓
+apt install git
+```
+
+---
+
+## Ansible Playbooks
+
+* Used to execute a series of tasks on target servers.
+* Playbooks are written using YAML (`.yaml`/`.yml`) files.
+* Playbooks are reusable and suitable for automation.
+
+### Example: Install Nginx
+
+```text
+Install Nginx
+    ↓
+Install Nginx package
+    ↓
+Start Nginx service
+```
+
+### Example: Install MySQL
+
+```text
+Install prerequisites
+    ↓
+Install MySQL Server
+    ↓
+Start MySQL Server
+    ↓
+Create Database
+```
+
+---
+
+# 5. Installation and Configuration of Ansible
+
+Typical Ansible architecture:
+
+```text
+Ansible Controller (VM)
+    |
+    | SSH
+    |
+    +---- Ansible Node1 (VM)
+    |
+    +---- Ansible Node2 (VM)
+```
+
+* Install Ansible on the Controller.
+* Configure SSH connectivity from the Controller to the Nodes.
+* Configure the Inventory File.
+* Configure `ansible.cfg`.
+
+---
+
+# 6. Advanced Ansible Concepts
+
+### Playbook Variables
+
+Used to define reusable values within Ansible playbooks.
+
+### Handlers
+
+Used to execute specific tasks when notified by another task, commonly for service restarts after configuration changes.
+
+### Loops
+
+Used to execute the same task repeatedly for multiple items.
+
+### Conditional Execution
+
+Used to execute tasks based on specific conditions.
+
+### Ansible Roles
+
+Used to organize and structure Ansible automation into reusable components.
+
+### Ansible Galaxy
+
+Used to find, share, and manage reusable Ansible roles and collections.
+
+---
+
+# Next Topics
+
+* Terraform
+* Monitoring Tools
+
+  * Prometheus
+  * Grafana
+* Python Fundamentals
