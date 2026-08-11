@@ -1,0 +1,853 @@
+# Jenkins CI/CD
+
+## Jenkins – Build Orchestration Tool
+
+* Jenkins is an open-source build orchestration tool.
+* Used to create end-to-end CI/CD pipelines to automate application builds and deployments.
+* Can also be used to perform scheduled process automation.
+
+## Jenkins Architecture
+
+Jenkins is based on a **Controller/Master and Agent/Slave** architecture.
+
+### Jenkins Master/Controller
+
+* Install Jenkins.
+* Create Jenkins Jobs/Projects/Pipelines.
+* Schedule jobs to execute on Jenkins Agent/Slave Nodes.
+
+### Jenkins Slave/Agent Node
+
+* Acts as a Build Server.
+* Install required build tools.
+* Execute Jenkins Jobs.
+
+### Jenkins Architecture – Scenarios
+
+**Scenario 1: Less Application Build and Release Frequency**
+
+```text
+Jenkins_Master (VM)
+    |
+    +--> Create Jenkins CI/CD Pipeline Projects
+    +--> Execute Builds on the same Jenkins Master Node
+```
+
+**Scenario 2: Multiple Applications with High Build and Release Frequency**
+
+```text
+Jenkins_Master (VM)
+    |
+    +--> Create Jenkins CI/CD Pipeline Projects
+    +--> Schedule Builds on Agent Nodes
+             |
+             +--> Jenkins_SlaveNode1 - Java Applications
+             +--> Jenkins_SlaveNode2 - .NET Applications
+             +--> Jenkins_SlaveNode3 - Python Applications
+             +--> Jenkins_SlaveNode4 - Angular/NodeJS
+             +--> Jenkins_SlaveNode5 - Ruby Applications
+```
+
+## Alternatives to Jenkins
+
+* GitHub Actions
+* GitLab CI
+* Bamboo
+* Azure Pipelines
+* AWS CodePipeline
+
+## Jenkins CI/CD Workflow
+
+```text
+SCM Checkout
+     ↓
+Application Build
+     ↓
+Unit Testing
+     ↓
+Create Artifacts
+     ↓
+Promote Application to Test Environment
+     ↓
+Testing / Validation
+     ↓
+Notify
+     ↓
+Deploy to Production
+```
+
+### Application Build
+
+Application Build is the process of:
+
+* Compiling source code.
+* Creating application artifacts/executable binaries.
+
+Examples:
+
+```text
+*.war
+*.jar
+*.exec
+*.dll
+```
+
+## Developers' Perspective
+
+Developers are consumers of Jenkins tools and services.
+
+They use Jenkins to:
+
+* Execute Jobs/Pipelines.
+* Cancel Jobs/Pipelines.
+* View Job output.
+* View Jenkins workspaces.
+* Monitor build and deployment status.
+
+## DevOps Perspective
+
+The DevOps Team owns and manages Jenkins.
+
+### Jenkins Administration Responsibilities
+
+* Installation and configuration of Jenkins.
+* Jenkins Global System Configuration.
+* Plugin Management.
+* Tools Management.
+* User Management.
+* Security Management.
+* Credentials Management.
+* Create Jenkins Jobs/Projects.
+* Configure Jenkins Controller and Agent Nodes.
+* Create CI/CD Pipeline Projects.
+* Onboard applications to the DevOps practice.
+* Periodic Backup and Recovery.
+* Periodic Jenkins and Plugin upgrades.
+* Troubleshoot Jenkins-related issues.
+
+---
+
+# Jenkins Installation
+
+Jenkins documentation:
+
+[Jenkins Installation Documentation](https://www.jenkins.io/doc/book/installing/?utm_source=chatgpt.com)
+
+Jenkins Linux installation:
+
+[Jenkins Linux Installation](https://www.jenkins.io/doc/book/installing/linux/?utm_source=chatgpt.com)
+
+### Installation Steps
+
+1. Install prerequisites such as JDK.
+2. Install Jenkins.
+3. Perform post-installation configuration.
+
+### Jenkins Controller Tools
+
+```text
+JDK
+Jenkins
+Git
+```
+
+### Jenkins Global System Configuration
+
+Used to define:
+
+* Default Jenkins properties.
+* Connections to external servers.
+* Global configuration settings.
+
+### Tools Management
+
+Used to manage external tools and their installation paths.
+
+---
+
+# Jenkins Plugin Management
+
+Plugin Management is used to:
+
+* Install plugins.
+* Uninstall plugins.
+* Upgrade plugins.
+* Downgrade plugins.
+* Enable plugins.
+* Disable plugins.
+
+Example:
+
+```text
+Jenkins_Master
+    |
+    +--> JDK
+    +--> Jenkins
+    +--> Plugins
+```
+
+---
+
+# Jenkins User Management
+
+Used to manage user authentication.
+
+Operations include:
+
+* Create Users.
+* Update Users.
+* Remove Users.
+
+# Jenkins Security Management
+
+Used to define user authorization.
+
+Examples:
+
+* Allow access.
+* Deny access.
+* Control permissions.
+
+# Jenkins Credentials Management
+
+Used to securely maintain credentials required by Jenkins to connect to external systems.
+
+---
+
+# Jenkins Jobs / Projects
+
+Jenkins supports different types of Jobs/Projects.
+
+## Freestyle Project
+
+* Based on manual configuration using the Jenkins GUI.
+* Suitable for simpler jobs.
+
+## Pipeline Project
+
+* Based on scripts.
+* Jenkins Pipeline scripts are commonly written using Groovy.
+* Used to create CI/CD pipelines and onboard applications.
+
+---
+
+# Jenkins Variables
+
+## Environment Variables
+
+Jenkins provides predefined environment variables whose values are updated during each job execution.
+
+Example:
+
+```groovy
+echo "jenkins-${JOB_NAME}-${BUILD_NUMBER}"
+```
+
+Example of a user-defined variable:
+
+```groovy
+var1 = 'xyz'
+echo "${var1}"
+```
+
+---
+
+# Jenkins Pipelines
+
+Jenkins supports two major pipeline styles.
+
+## Scripted Pipeline
+
+* Uses typical Groovy scripting.
+* Provides greater programming flexibility.
+
+## Declarative Pipeline
+
+* Uses a structured pipeline syntax.
+* Easier to read and maintain.
+* Snippet Generator can be used to generate pipeline syntax based on selected parameters.
+
+### Basic Declarative Pipeline
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello1') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+
+        stage('Hello2') {
+            steps {
+                echo 'Hello Everyone'
+            }
+        }
+    }
+}
+```
+
+### CI/CD Pipeline Example
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+        stage('SCM_Checkout') {
+            steps {
+                echo 'Perform SCM Checkout for Java Application'
+            }
+        }
+
+        stage('Application Build') {
+            steps {
+                echo 'Perform Java Application Build'
+            }
+        }
+
+        stage('Deploy to QA Server') {
+            steps {
+                echo 'Deploy to QA Server'
+            }
+        }
+    }
+}
+```
+
+---
+
+# Jenkins Controller and Agent Configuration
+
+## Setup
+
+### Jenkins Controller
+
+```text
+Tools:
+- Git
+- JDK
+- Jenkins
+```
+
+Responsibilities:
+
+* Create Jenkins CI/CD Pipeline Projects.
+* Schedule builds.
+* Assign builds to Agent Nodes.
+
+### Jenkins Agent Node
+
+Used to perform Java Maven application builds.
+
+```text
+Tools:
+- Git
+- JDK
+- Maven
+```
+
+## SSH Connection
+
+On the Jenkins Agent Node:
+
+* Create a Linux user.
+* Generate SSH keys.
+* Configure SSH access.
+
+Then:
+
+```text
+Jenkins Console
+    ↓
+Configure Jenkins Node
+    ↓
+Configure SSH Connection
+    ↓
+Connect Jenkins Controller to Agent
+```
+
+---
+
+# Jenkins Pipeline with Agent Node
+
+```groovy
+pipeline {
+    agent { label 'slave1' }
+
+    environment {
+        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
+    }
+
+    stages {
+        stage('SCM_Checkout') {
+            steps {
+                echo 'Perform SCM Checkout for Java Application'
+                git 'https://github.com/PL-DevOps-Cloud-2705/java-webapp-project.git'
+            }
+        }
+
+        stage('Application Build') {
+            steps {
+                echo 'Perform Java Application Build'
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Deploy to QA Server') {
+            steps {
+                echo 'Deploy to QA Server'
+            }
+        }
+    }
+}
+```
+
+---
+
+# Target Tomcat Server
+
+## Web Application Server
+
+* Apache Tomcat Web Application Server.
+* Used as the target server for deploying Java `.war` artifacts.
+* Jenkins can use the Publish Over SSH plugin to transfer artifacts to the target server.
+
+### Environment Architecture
+
+```text
+Jenkins_Master
+      |
+      ↓
+Jenkins_Slave
+      |
+      | Build
+      ↓
+*.war
+      |
+      ↓
+QA Tomcat Server
+      |
+      ↓
+QA Testing
+      |
+      ↓
+UAT Tomcat Server
+      |
+      ↓
+UAT Testing
+      |
+      ↓
+Production Tomcat Server(s)
+```
+
+## Test Server
+
+```text
+Test_Server (VM)
+
+Tools:
+- JDK
+- Tomcat WAS
+
+Tomcat Port:
+8080
+```
+
+---
+
+# Deployment
+
+Deployment means copying application artifacts from one server to another.
+
+```text
+Source Server                         Target Server
+
+Jenkins_Slave                         Tomcat_Server
+     |                                     |
+     | target/*.war                        |
+     +------------------------------------>|
+                                           |
+                                           ↓
+                                  /opt/tomcat/webapps
+```
+
+Example:
+
+```text
+Source:
+target/*.war
+
+Target:
+ /opt/tomcat/webapps/
+```
+
+## Jenkins Deployment Pipeline
+
+```groovy
+pipeline {
+    agent { label 'slave1' }
+
+    environment {
+        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
+    }
+
+    stages {
+        stage('SCM_Checkout') {
+            steps {
+                git 'https://github.com/PL-DevOps-Cloud-2705/java-webapp-project.git'
+            }
+        }
+
+        stage('Application Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Deploy to QA Server') {
+            steps {
+                script {
+                    sshPublisher(
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'Tomcat_Server_QA',
+                                transfers: [
+                                    sshTransfer(
+                                        cleanRemote: false,
+                                        excludes: '',
+                                        execCommand: '',
+                                        execTimeout: 120000,
+                                        flatten: false,
+                                        makeEmptyDirs: false,
+                                        noDefaultExcludes: false,
+                                        patternSeparator: '[, ]+',
+                                        remoteDirectory: '.',
+                                        remoteDirectorySDF: false,
+                                        removePrefix: 'target/',
+                                        sourceFiles: 'target/*.war'
+                                    )
+                                ],
+                                usePromotionTimestamp: false,
+                                useWorkspaceInPromotion: false,
+                                verbose: false
+                            )
+                        ]
+                    )
+                }
+            }
+        }
+
+        stage('Perform QA Testing') {
+            steps {
+                echo 'Perform QA Testing'
+            }
+        }
+
+        stage('Deploy to UAT Server') {
+            steps {
+                script {
+                    sshPublisher(
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'Tomcat_Server_UAT',
+                                transfers: [
+                                    sshTransfer(
+                                        cleanRemote: false,
+                                        excludes: '',
+                                        execCommand: '',
+                                        execTimeout: 120000,
+                                        flatten: false,
+                                        makeEmptyDirs: false,
+                                        noDefaultExcludes: false,
+                                        patternSeparator: '[, ]+',
+                                        remoteDirectory: '.',
+                                        remoteDirectorySDF: false,
+                                        removePrefix: 'target/',
+                                        sourceFiles: 'target/*.war'
+                                    )
+                                ],
+                                usePromotionTimestamp: false,
+                                useWorkspaceInPromotion: false,
+                                verbose: false
+                            )
+                        ]
+                    )
+                }
+            }
+        }
+
+        stage('Perform UAT Testing') {
+            steps {
+                echo 'Perform UAT Testing'
+            }
+        }
+
+        stage('Deploy to PROD Server') {
+            steps {
+                script {
+                    sshPublisher(
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'Tomcat_Server_PROD',
+                                transfers: [
+                                    sshTransfer(
+                                        cleanRemote: false,
+                                        excludes: '',
+                                        execCommand: '',
+                                        execTimeout: 120000,
+                                        flatten: false,
+                                        makeEmptyDirs: false,
+                                        noDefaultExcludes: false,
+                                        patternSeparator: '[, ]+',
+                                        remoteDirectory: '.',
+                                        remoteDirectorySDF: false,
+                                        removePrefix: 'target/',
+                                        sourceFiles: 'target/*.war'
+                                    )
+                                ],
+                                usePromotionTimestamp: false,
+                                useWorkspaceInPromotion: false,
+                                verbose: false
+                            )
+                        ]
+                    )
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+# Jenkins Build Triggers
+
+Jenkins supports different mechanisms for triggering Jobs.
+
+## Build Periodically
+
+Reference:
+
+[Crontab Guru](https://crontab.guru/?utm_source=chatgpt.com)
+
+* Triggers Jenkins Jobs according to a cron schedule.
+* Does not depend on source-code changes.
+* Useful for scheduled process automation.
+* Not specifically intended for CI/CD source-code change detection.
+
+Example:
+
+```text
+Jenkins_Start_Jobs
+    ↓
+Start Servers
+    ↓
+Scheduled: 7:45 AM
+
+Jenkins_Stop_Jobs
+    ↓
+Stop Servers
+    ↓
+Scheduled: 10:15 PM
+```
+
+## GitHub Webhook
+
+* Used for CI/CD.
+* Triggers a Jenkins Job when a commit/change occurs in the remote GitHub repository.
+* The GitHub repository must be configured with the Jenkins webhook URL.
+
+Example:
+
+```text
+GitHub Repository
+      |
+      | Commit
+      ↓
+GitHub Webhook
+      |
+      ↓
+Jenkins
+      |
+      ↓
+CI/CD Pipeline
+```
+
+## Poll SCM
+
+* Checks the source-code repository based on a cron schedule.
+* Triggers the build only when changes are detected.
+
+Example use case:
+
+```text
+QA Testing Team
+    ↓
+Testing Cycles
+    ├── 8 AM
+    ├── 12 PM
+    └── 3 PM
+```
+
+---
+
+# Jenkins Email Notifications
+
+Email notifications can be configured for events such as:
+
+* Successful execution.
+* Failure.
+* Aborted execution.
+
+## Gmail SMTP Configuration
+
+Before configuring Jenkins email notifications:
+
+1. Enable Two-Factor Authentication/MFA on the Gmail account.
+2. Create a Gmail App Password.
+3. Configure the SMTP server in Jenkins.
+
+### Jenkins SMTP Configuration
+
+```text
+SMTP Server:
+smtp.gmail.com
+
+SMTP Port:
+465
+
+SSL:
+Enabled
+
+Authentication:
+Enabled
+
+Username:
+Gmail Account
+
+Password:
+Gmail App Password
+```
+
+> Never store or share the actual Gmail App Password in notes, source code, or pipeline scripts.
+
+## Example Email Notification
+
+```groovy
+post {
+    failure {
+        mail(
+            body: "Jenkins Job Status: ${BUILD_URL}",
+            subject: "Build Failed - ${JOB_NAME} (${BUILD_NUMBER})",
+            to: "recipient@example.com"
+        )
+    }
+
+    success {
+        mail(
+            body: "Jenkins Job Status: ${BUILD_URL}",
+            subject: "Build Successful - ${JOB_NAME} (${BUILD_NUMBER})",
+            to: "recipient@example.com"
+        )
+    }
+
+    aborted {
+        mail(
+            body: "Jenkins Job Status: ${BUILD_URL}",
+            subject: "Build Aborted - ${JOB_NAME} (${BUILD_NUMBER})",
+            to: "recipient@example.com"
+        )
+    }
+}
+```
+
+---
+
+# Jenkins Backup and Recovery
+
+Jenkins Home Directory:
+
+```text
+/var/lib/jenkins
+```
+
+The Jenkins Home Directory contains important Jenkins configuration and job-related data.
+
+Regular backup and recovery procedures should be maintained for Jenkins.
+
+---
+
+# Jenkins Upgrade
+
+Jenkins services and plugins should be periodically upgraded.
+
+Upgrade activities include:
+
+* Jenkins version upgrades.
+* Plugin upgrades.
+* Compatibility checks.
+* Backup before upgrades.
+* Testing after upgrades.
+
+---
+
+# Jenkins Troubleshooting
+
+Common Jenkins administration activities include:
+
+* Investigating failed builds.
+* Troubleshooting Agent/Node connectivity.
+* Checking plugin issues.
+* Troubleshooting credentials.
+* Checking tool configurations.
+* Investigating deployment failures.
+* Checking Jenkins logs.
+* Troubleshooting pipeline execution problems.
+
+---
+
+# Application Build Environments
+
+Example Java applications may require different JDK versions:
+
+```text
+java-webapp-project
+    → JDK 17
+
+java-webapp-project2
+    → JDK 21
+```
+
+Typical environment flow:
+
+```text
+DEV
+ ↓
+BUILD
+ ↓
+QA
+ ↓
+UAT
+ ↓
+PROD
+```
+
+Artifacts:
+
+```text
+Build → *.war
+QA    → *.war
+UAT   → *.war
+PROD  → *.war
+```
+
+---
+
+# Next Topic
+
+## Containerization Using Docker
